@@ -33,10 +33,10 @@
 #ifndef __ETHERPKT_HH__
 #define __ETHERPKT_HH__
 
+#include <iosfwd>
 #include <memory>
 
 #include "sim/host.hh"
-
 #include "base/refcnt.hh"
 
 class Checkpoint;
