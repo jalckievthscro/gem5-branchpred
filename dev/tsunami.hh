@@ -38,6 +38,7 @@ class ScsiController;
 class TlaserClock;
 class EtherDev;
 class TsunamiCChip;
+class TsunamiPChip;
 
 class Tsunami : public SimObject
 {
@@ -54,6 +55,7 @@ class Tsunami : public SimObject
 
     TlaserClock *clock;
     TsunamiCChip *cchip;
+    TsunamiPChip *pchip;
 
     int intr_sum_type[Tsunami::Max_CPUs];
     int ipi_pending[Tsunami::Max_CPUs];
@@ -62,9 +64,8 @@ class Tsunami : public SimObject
 
   public:
     Tsunami(const std::string &name, ScsiController *scsi,
-               EtherDev *ethernet, TlaserClock *clock, TsunamiCChip *tc,
-               SimConsole *, IntrControl *intctrl,
-               int intrFreq);
+               EtherDev *ethernet, TlaserClock *clock, TsunamiCChip *cc, TsunamiPChip *pc,
+               SimConsole *, IntrControl *intctrl, int intrFreq);
 
     virtual void serialize(std::ostream &os);
     virtual void unserialize(Checkpoint *cp, const std::string &section);
