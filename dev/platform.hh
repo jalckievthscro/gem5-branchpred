@@ -53,10 +53,13 @@ class Platform : public SimObject
     int interrupt_frequency;
 
   public:
-    Platform(const std::string &name, SimConsole *con, IntrControl *intctrl,
+    Platform(const std::string &name, IntrControl *intctrl,
              PciConfigAll *pci, int intrFreq)
-        : SimObject(name), intrctrl(intctrl), cons(con), pciconfig(pci),
+        : SimObject(name), intrctrl(intctrl), pciconfig(pci),
           interrupt_frequency(intrFreq) {}
+    virtual ~Platform() {}
+    virtual void postConsoleInt() = 0;
+    virtual void clearConsoleInt() = 0;
 };
 
 #endif // __PLATFORM_HH_
