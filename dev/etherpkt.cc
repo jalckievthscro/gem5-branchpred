@@ -34,17 +34,16 @@
 using namespace std;
 
 void
-EtherPacket::serialize(ostream &os)
+PacketData::serialize(ostream &os)
 {
     SERIALIZE_SCALAR(length);
     SERIALIZE_ARRAY(data, length);
 }
 
 void
-EtherPacket::unserialize(Checkpoint *cp, const string &section)
+PacketData::unserialize(Checkpoint *cp, const string &section)
 {
     UNSERIALIZE_SCALAR(length);
     data = new uint8_t[length];
     UNSERIALIZE_ARRAY(data, length);
 }
-
