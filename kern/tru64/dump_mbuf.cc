@@ -37,6 +37,8 @@
 #include "targetarch/isa_traits.hh"
 #include "targetarch/vtophys.hh"
 
+namespace Tru64 {
+
 void
 DumpMbuf(AlphaArguments args)
 {
@@ -66,3 +68,5 @@ DumpMbuf(AlphaArguments args)
         CopyData(xc, &m, m.m_next, sizeof(m));
     }
 }
+
+} // namespace Tru64
