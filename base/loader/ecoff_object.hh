@@ -44,7 +44,8 @@ class EcoffObject : public ObjectFile
     ecoff_aouthdr *aoutHdr;
 
     EcoffObject(const std::string &_filename, int _fd,
-                size_t _len, uint8_t *_data);
+                size_t _len, uint8_t *_data,
+                Arch _arch, OpSys _opSys);
 
   public:
     virtual ~EcoffObject() {}
