@@ -29,11 +29,12 @@
 #include <iostream>
 #include <string>
 
-#include "host.hh"
 #include "cprintf.hh"
+#include "host.hh"
+#include "hostinfo.hh"
 #include "misc.hh"
-#include "universe.hh"
 #include "trace.hh"
+#include "universe.hh"
 
 using namespace std;
 
@@ -61,8 +62,6 @@ void
 __fatal(const string &format, cp::ArgList &args, const char *func,
         const char *file, int line)
 {
-    long mem_usage();
-
     string fmt = "fatal: " + format + " [%s:%s, line %d]\n"
         "\n%d\nMemory Usage: %ld KBytes\n";
 
@@ -70,7 +69,7 @@ __fatal(const string &format, cp::ArgList &args, const char *func,
     args.append(file);
     args.append(line);
     args.append(curTick);
-    args.append(mem_usage());
+    args.append(memUsage());
     args.dump(cerr, fmt);
 
     delete &args;
