@@ -83,6 +83,12 @@ class SimObject : public Serializable
     // static: call nameOut() & serialize() on all SimObjects
     static void serializeAll(std::ostream &);
 
+#ifdef DEBUG
+  public:
+    bool doDebugBreak;
+    static void debugObjectBreak(const std::string &objs);
+#endif
+
   public:
     bool doRecordEvent;
     void recordEvent(const std::string &stat);
