@@ -3143,7 +3143,7 @@ pal_restore_state:
 	//
 
 	mfpr	r31, pt0		// pad last load to icsr write (in case of replay, icsr will be written anyway)	//orig
-	mfpr	r31, pt0		// "										//orig
+	mfpr	r31, pt0		// ""										//orig
 	mfpr	r0, icsr		// Get icsr									//orig
 //orig	ldah	r2,  <1@<icsr_v_sde-16>>(r31)	// Get a one in SHADOW_ENABLE bit location
 	ldah	r2,  (1<<(ICSR_V_SDE-16))(r31)	// Get a one in SHADOW_ENABLE bit location				//orig
@@ -4707,7 +4707,8 @@ CallPal_OpcDecBE:
 
 	CALL_PAL_UNPRIV(0x00BF)
 CallPal_OpcDecBF:
-	br	r31, osfpal_calpal_opcdec
+	// MODIFIED BY EGH 2/25/04
+	br	r31, copypal_impl
 	
 	
 /*======================================================================*/
@@ -5121,3 +5122,121 @@ hw_rei_update_spe_10_:	mfpr	r9, pt_pcbb			// Kernel mode
 	br	r31, pal_ic_flush		// Pal restriction - must flush Icache if changing ICSR<SPE>
 #endif
 
+
+copypal_impl:	
+	mov r16, r0	 
+	ble r18, finished	#if len <=0 we are finished 
+	ldq_u r8, 0(r17) 
+	xor r17, r16, r9 
+	and r9, 7, r9 
+	and r16, 7, r10	
+	bne r9, unaligned 
+	beq r10, aligned	 
+	ldq_u r9, 0(r16) 
+	addq r18, r10, r18
+	mskqh r8, r17, r8
+	mskql r9, r17, r9
+	bis r8, r9, r8
+aligned:
+	subq r18, 1, r10
+	bic r10, 7, r10
+	and r18, 7, r18
+	beq r10, aligned_done
+loop:
+	stq_u r8, 0(r16)
+	ldq_u r8, 8(r17)
+	subq r10, 8, r10
+	lda r16,8(r16)
+	lda r17,8(r17)
+	bne r10, loop
+aligned_done:
+	bne r18, few_left
+	stq_u r8, 0(r16)
+	br r31, finished
+	few_left:
+	mskql r8, r18, r10
+	ldq_u r9, 0(r16)
+	mskqh r9, r18, r9
+	bis r10, r9, r10
+	stq_u r10, 0(r16)
+	br r31, finished
+unaligned:
+	addq r17, r18, r25
+	cmpule r18, 8, r9
+	bne r9, unaligned_few_left
+	beq r10, unaligned_dest_aligned
+	and r16, 7, r10
+	subq r31, r10, r10
+	addq r10, 8, r10
+	ldq_u r9, 7(r17)
+	extql r8, r17, r8
+	extqh r9, r17, r9
+	bis r8, r9, r12
+	insql r12, r16, r12
+	ldq_u r13, 0(r16)
+	mskql r13, r16, r13
+	bis r12, r13, r12
+	stq_u r12, 0(r16)
+	addq r16, r10, r16
+	addq r17, r10, r17
+	subq r18, r10, r18
+	ldq_u r8, 0(r17)
+unaligned_dest_aligned:
+	subq r18, 1, r10
+	bic r10, 7, r10
+	and r18, 7, r18
+	beq r10, unaligned_partial_left
+unaligned_loop:
+	ldq_u r9, 7(r17)
+	lda r17, 8(r17)
+	extql r8, r17, r12
+	extqh r9, r17, r13
+	subq r10, 8, r10
+	bis r12, r13, r13
+	stq r13, 0(r16)
+	lda r16, 8(r16)
+	beq r10, unaligned_second_partial_left
+	ldq_u r8, 7(r17)
+	lda r17, 8(r17)
+	extql r9, r17, r12
+	extqh r8, r17, r13
+	bis r12, r13, r13
+	subq r10, 8, r10
+	stq r13, 0(r16)
+	lda r16, 8(r16)
+	bne r10, unaligned_loop
+unaligned_partial_left:
+	mov r8, r9
+unaligned_second_partial_left:
+	ldq_u r8, -1(r25)
+	extql r9, r17, r9
+	extqh r8, r17, r8
+	bis r8, r9, r8
+	bne r18, few_left
+	stq_u r8, 0(r16)
+	br r31, finished
+unaligned_few_left:
+	ldq_u r9, -1(r25)
+	extql r8, r17, r8
+	extqh r9, r17, r9
+	bis r8, r9, r8
+	insqh r8, r16, r9
+	insql r8, r16, r8
+	lda r12, -1(r31)
+	mskql r12, r18, r13
+	cmovne r13, r13, r12
+	insqh r12, r16, r13
+	insql r12, r16, r12
+	addq r16, r18, r10
+	ldq_u r14, 0(r16)
+	ldq_u r25, -1(r10)
+	bic r14, r12, r14
+	bic r25, r13, r25
+	and r8, r12, r8
+	and r9, r13, r9
+	bis r8, r14, r8
+	bis r9, r25, r9
+	stq_u r9, -1(r10)
+	stq_u r8, 0(r16)
+finished:
+	hw_rei
