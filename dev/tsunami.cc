@@ -33,7 +33,7 @@
 #include "cpu/intr_control.hh"
 #include "dev/console.hh"
 #include "dev/etherdev.hh"
-#include "dev/adaptec_ctrl.hh"
+#include "dev/ide_ctrl.hh"
 #include "dev/tlaser_clock.hh"
 #include "dev/tsunami_cchip.hh"
 #include "dev/tsunami_pchip.hh"
