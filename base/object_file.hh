@@ -29,64 +29,60 @@
 #ifndef __OBJECT_FILE_HH__
 #define __OBJECT_FILE_HH__
 
-#include "ecoff.hh"
 #include "isa_traits.hh"	// for Addr
 
+class FunctionalMemory;
 class SymbolTable;
 
 class ObjectFile
 {
   protected:
-    std::string name;
+    const std::string filename;
     int descriptor;
-    uint8_t *data;
+    uint8_t *fileData;
     size_t len;
 
+    ObjectFile(const std::string &_filename, int _fd,
+               size_t _len, uint8_t *_data);
+
   public:
-    ObjectFile();
-    explicit ObjectFile(std::string file);
     virtual ~ObjectFile();
 
-    bool open(std::string file);
     void close();
 
-    virtual bool loadGlobals(SymbolTable *symtab) = 0;
-    virtual bool loadLocals(SymbolTable *symtab) = 0;
-    virtual void postOpen() = 0;
+    virtual bool loadSections(FunctionalMemory *mem,
+                              bool loadPhys = false) = 0;
+    virtual bool loadGlobalSymbols(SymbolTable *symtab) = 0;
+    virtual bool loadLocalSymbols(SymbolTable *symtab) = 0;
 
   protected:
-    Addr text_off;
-    Addr data_off;
-    Addr bss_off;
 
-    size_t text_size;
-    size_t data_size;
-    size_t bss_size;
+    struct Section {
+        Addr baseAddr;
+        size_t size;
+    };
 
-  public:
-    Addr textOffset() const { return text_off; }
-    Addr dataOffset() const { return data_off; }
-    Addr bssOffset() const { return bss_off; }
+    Addr entry;
+    Addr globalPtr;
 
-    size_t textSize() const { return text_size; }
-    size_t dataSize() const { return data_size; }
-    size_t bssSize() const { return bss_size; }
-};
-
-class EcoffObject : public ObjectFile
-{
-  protected:
-    EcoffFileHeader *exec;
-    EcoffAOutHeader *aout;
+    Section text;
+    Section data;
+    Section bss;
 
   public:
-    EcoffObject() {}
-    explicit EcoffObject(std::string file) { open(file); }
-    virtual ~EcoffObject() {}
+    Addr entryPoint() const { return entry; }
+    Addr globalPointer() const { return globalPtr; }
 
-    virtual bool loadGlobals(SymbolTable *symtab);
-    virtual bool loadLocals(SymbolTable *symtab);
-    virtual void postOpen();
+    Addr textBase() const { return text.baseAddr; }
+    Addr dataBase() const { return data.baseAddr; }
+    Addr bssBase() const { return bss.baseAddr; }
+
+    size_t textSize() const { return text.size; }
+    size_t dataSize() const { return data.size; }
+    size_t bssSize() const { return bss.size; }
 };
+
+ObjectFile *createObjectFile(const std::string &fname);
+
 
 #endif // __OBJECT_FILE_HH__
