@@ -37,12 +37,12 @@
 #define RTC_MON                 0x08
 #define RTC_YEAR                0x09
 
-#define RTC_CNTRL_REGA          0x0A
+#define RTC_STAT_REGA           0x0A
 #define  RTCA_1024HZ            0x06  /* 1024Hz periodic interrupt frequency */
 #define  RTCA_32768HZ           0x20  /* 22-stage divider, 32.768KHz timebase */
 #define  RTCA_UIP               0x80  /* 1 = date and time update in progress */
 
-#define RTC_CNTRL_REGB          0x0B
+#define RTC_STAT_REGB           0x0B
 #define  RTCB_DST               0x01  /* USA Daylight Savings Time enable */
 #define  RTCB_24HR              0x02  /* 0 = 12 hours, 1 = 24 hours */
 #define  RTCB_BIN               0x04  /* 0 = BCD, 1 = Binary coded time */
@@ -52,6 +52,6 @@
 #define  RTCB_PRDC_IE           0x40  /* 1 = enable periodic clock interrupt */
 #define  RTCB_NO_UPDT           0x80  /* stop clock updates */
 
-#define RTC_CNTRL_REGC          0x0C
-#define RTC_CNTRL_REGD          0x0D
+#define RTC_STAT_REGC           0x0C
+#define RTC_STAT_REGD           0x0D
 
