@@ -38,6 +38,20 @@
 #include "dev/io_device.hh"
 #include "dev/uart.hh"
 
+
+/* UART8250 Interrupt ID Register
+ *  bit 0    Interrupt Pending 0 = true, 1 = false
+ *  bit 2:1  ID of highest priority interrupt
+ *  bit 7:3  zeroes
+ */
+#define IIR_NOPEND 0x1
+
+// Interrupt IDs
+#define IIR_MODEM 0x00 /* Modem Status (lowest priority) */
+#define IIR_TXID  0x02 /* Tx Data */
+#define IIR_RXID  0x04 /* Rx Data */
+#define IIR_LINE  0x06 /* Rx Line Status (highest priority)*/
+
 class SimConsole;
 class Platform;
 
