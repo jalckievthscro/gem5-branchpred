@@ -32,12 +32,13 @@
 #include <string>
 
 #include "base/trace.hh"
+#include "config/use_mysql.hh"
 
 namespace Stats {
 
 extern Tick EventStart;
 
-#ifdef USE_MYSQL
+#if USE_MYSQL
 void __event(const std::string &stat);
 bool MySqlConnected();
 #endif
@@ -52,7 +53,7 @@ recordEvent(const std::string &stat)
 
     DPRINTF(StatEvents, "Statistics Event: %s\n", stat);
 
-#ifdef USE_MYSQL
+#if USE_MYSQL
     if (!MySqlConnected())
         return;
 
