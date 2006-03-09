@@ -56,6 +56,8 @@ class ProcessInfo
 
 class StackTrace
 {
+  protected:
+    typedef TheISA::MachInst MachInst;
   private:
     ExecContext *xc;
     std::vector<Addr> stack;
@@ -70,7 +72,7 @@ class StackTrace
 
   public:
     StackTrace();
-    StackTrace(ExecContext *xc, StaticInstPtr<TheISA> inst);
+    StackTrace(ExecContext *xc, StaticInstPtr inst);
     ~StackTrace();
 
     void clear()
@@ -80,7 +82,7 @@ class StackTrace
     }
 
     bool valid() const { return xc != NULL; }
-    bool trace(ExecContext *xc, StaticInstPtr<TheISA> inst);
+    bool trace(ExecContext *xc, StaticInstPtr inst);
 
   public:
     const std::vector<Addr> &getstack() const { return stack; }
@@ -102,7 +104,7 @@ class StackTrace
 };
 
 inline bool
-StackTrace::trace(ExecContext *xc, StaticInstPtr<TheISA> inst)
+StackTrace::trace(ExecContext *xc, StaticInstPtr inst)
 {
     if (!inst->isCall() && !inst->isReturn())
         return false;
