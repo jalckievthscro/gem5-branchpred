@@ -28,11 +28,13 @@
 
 #include "arch/mips/process.hh"
 
+using namespace std;
+
 namespace MipsISA
 {
 
 LiveProcess *
-createProcess(const string &nm, ObjectFile * objFile,
+createProcess(const string &nm, ObjectFile * objFile, System * system,
         int stdin_fd, int stdout_fd, int stderr_fd,
         vector<string> &argv, vector<string> &envp)
 {
@@ -41,7 +43,7 @@ createProcess(const string &nm, ObjectFile * objFile,
         fatal("Object file does not match architecture.");
     switch (objFile->getOpSys()) {
       case ObjectFile::Linux:
-        process = new MipsLinuxProcess(nm, objFile,
+        process = new MipsLinuxProcess(nm, objFile,system,
                                         stdin_fd, stdout_fd, stderr_fd,
                                         argv, envp);
         break;
