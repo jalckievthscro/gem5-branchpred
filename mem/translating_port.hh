@@ -29,8 +29,6 @@
 #ifndef __MEM_TRANSLATING_PROT_HH__
 #define __MEM_TRANSLATING_PROT_HH__
 
-#include "mem/memory.hh"
-
 class Port;
 class PageTable;
 
