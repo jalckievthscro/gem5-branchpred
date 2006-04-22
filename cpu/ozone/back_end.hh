@@ -125,6 +125,7 @@ class BackEnd
         InstList nonSpec;
         InstList replayList;
         ReadyInstQueue readyQueue;
+      public:
         int size;
         int numInsts;
         int width;
@@ -320,6 +321,12 @@ class BackEnd
 
     int numROBEntries;
     int numInsts;
+
+    bool squashPending;
+    InstSeqNum squashSeqNum;
+    Addr squashNextPC;
+
+    Fault faultFromFetch;
 
   private:
     typedef typename std::list<DynInstPtr>::iterator InstListIt;

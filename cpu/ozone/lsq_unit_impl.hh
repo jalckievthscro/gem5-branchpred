@@ -698,7 +698,7 @@ OzoneLSQ<Impl>::squash(const InstSeqNum &squashed_num)
             stallingLoadIdx = 0;
         }
 
-        loadQueue[load_idx]->squashed = true;
+//        loadQueue[load_idx]->squashed = true;
         loadQueue[load_idx] = NULL;
         --loads;
 
@@ -728,7 +728,7 @@ OzoneLSQ<Impl>::squash(const InstSeqNum &squashed_num)
             stallingStoreIsn = 0;
         }
 
-        storeQueue[store_idx].inst->squashed = true;
+//        storeQueue[store_idx].inst->squashed = true;
         storeQueue[store_idx].inst = NULL;
         storeQueue[store_idx].canWB = 0;
 

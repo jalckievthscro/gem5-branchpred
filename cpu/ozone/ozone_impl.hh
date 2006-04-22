@@ -35,6 +35,8 @@
 #include "cpu/ozone/front_end.hh"
 #include "cpu/ozone/inst_queue.hh"
 #include "cpu/ozone/lsq_unit.hh"
+#include "cpu/ozone/lw_lsq.hh"
+#include "cpu/ozone/lw_back_end.hh"
 #include "cpu/ozone/null_predictor.hh"
 #include "cpu/ozone/dyn_inst.hh"
 #include "cpu/ozone/simple_params.hh"
@@ -55,10 +57,10 @@ struct OzoneImpl {
     typedef TwobitBPredUnit<OzoneImpl> BranchPred;
     typedef FrontEnd<OzoneImpl> FrontEnd;
     // Will need IQ, LSQ eventually
-    typedef BackEnd<OzoneImpl> BackEnd;
+    typedef LWBackEnd<OzoneImpl> BackEnd;
 
     typedef InstQueue<OzoneImpl> InstQueue;
-    typedef OzoneLSQ<OzoneImpl> LdstQueue;
+    typedef OzoneLWLSQ<OzoneImpl> LdstQueue;
 
     typedef OzoneDynInst<OzoneImpl> DynInst;
     typedef RefCountingPtr<DynInst> DynInstPtr;

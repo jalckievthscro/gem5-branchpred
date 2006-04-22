@@ -567,8 +567,11 @@ OzoneLSQ<Impl>::read(MemReqPtr &req, T &data, int load_idx)
         req->data = new uint8_t[64];
 
         assert(!req->completionEvent);
-        req->completionEvent =
-            new typename BackEnd::LdWritebackEvent(loadQueue[load_idx], be);
+        typedef typename BackEnd::LdWritebackEvent LdWritebackEvent;
+
+        LdWritebackEvent *wb = new LdWritebackEvent(loadQueue[load_idx], be);
+
+        req->completionEvent = wb;
 
         // Do Cache Access
         MemAccessResult result = dcacheInterface->access(req);
@@ -585,6 +588,8 @@ OzoneLSQ<Impl>::read(MemReqPtr &req, T &data, int load_idx)
             lastDcacheStall = curTick;
 
             _status = DcacheMissStall;
+
+            wb->setDcacheMiss();
 
         } else {
 //            DPRINTF(Activity, "Activity: ld accessing mem hit [sn:%lli]\n",
