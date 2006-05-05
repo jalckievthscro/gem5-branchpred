@@ -45,7 +45,6 @@ class AlphaSystem : public System
     {
         std::string console_path;
         std::string palcode;
-        std::string boot_osflags;
         uint64_t system_type;
         uint64_t system_rev;
     };
