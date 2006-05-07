@@ -29,6 +29,13 @@
 #ifndef __ARCH_MIPS_UTILITY_HH__
 #define __ARCH_MIPS_UTILITY_HH__
 
-//Placeholder file for now
+#include "arch/mips/types.hh"
+#include "arch/mips/constants.hh"
+#include "base/misc.hh"
+#include "sim/host.hh"
+
+namespace MipsISA {
+
+};
 
 #endif
