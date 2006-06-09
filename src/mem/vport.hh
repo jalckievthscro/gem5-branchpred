@@ -38,7 +38,7 @@
 #ifndef __MEM_VPORT_HH__
 #define __MEM_VPORT_HH__
 
-#include "mem/port.hh"
+#include "mem/port_impl.hh"
 #include "config/full_system.hh"
 #include "arch/vtophys.hh"
 
