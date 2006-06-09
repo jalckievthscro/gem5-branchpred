@@ -1,3 +1,5 @@
+// -*- mode:c++ -*-
+
 ////////////////////////////////////////////////////////////////////
 //
 // TlbOp instructions
@@ -30,13 +32,10 @@ output decoder {{
 def template TlbOpExecute {{
         Fault %(class_name)s::execute(%(CPU_exec_context)s *xc, Trace::InstRecord *traceData) const
         {
-                //Call into the trap handler with the appropriate fault
-                return No_Fault;
-        }
-
                 //Write the resulting state to the execution context
                 %(op_wb)s;
 
+                //Call into the trap handler with the appropriate fault
                 return No_Fault;
         }
 }};
