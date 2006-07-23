@@ -41,8 +41,6 @@
 using namespace std;
 using namespace MipsISA;
 
-Addr MipsLiveProcess::stack_start = 0x7FFFFFFF;
-
 MipsLiveProcess::MipsLiveProcess(const std::string &nm, ObjectFile *objFile,
         System *_system, int stdin_fd, int stdout_fd, int stderr_fd,
         std::vector<std::string> &argv, std::vector<std::string> &envp)
@@ -51,11 +49,10 @@ MipsLiveProcess::MipsLiveProcess(const std::string &nm, ObjectFile *objFile,
 {
     // Set up stack. On MIPS, stack starts at the top of kuseg
     // user address space. MIPS stack grows down from here
-    stack_base = stack_start;
+    stack_base = 0x7FFFFFFF;
 
     // Set pointer for next thread stack.  Reserve 8M for main stack.
     next_thread_stack_base = stack_base - (8 * 1024 * 1024);
-    stack_start = next_thread_stack_base;
 
     // Set up break point (Top of Heap)
     brk_point = objFile->dataBase() + objFile->dataSize() + objFile->bssSize();
