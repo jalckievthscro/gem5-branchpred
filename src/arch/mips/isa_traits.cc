@@ -30,14 +30,12 @@
  */
 
 #include "arch/mips/isa_traits.hh"
-//#include "config/full_system.hh"
-#include "cpu/static_inst.hh"
+#include "arch/mips/regfile/regfile.hh"
 #include "sim/serialize.hh"
 #include "base/bitfield.hh"
 
 using namespace MipsISA;
 using namespace std;
-
 
 void
 MipsISA::copyRegs(ThreadContext *src, ThreadContext *dest)

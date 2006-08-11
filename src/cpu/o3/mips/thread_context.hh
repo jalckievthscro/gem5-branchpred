@@ -29,6 +29,7 @@
  *          Korey Sewell
  */
 
+#include "arch/mips/types.hh"
 #include "cpu/o3/thread_context.hh"
 
 template <class Impl>
@@ -45,8 +46,8 @@ class MipsTC : public O3ThreadContext<Impl>
         this->cpu->setNextNPC(val, this->thread->readTid());
     }
 
-    virtual void changeRegFileContext(TheISA::RegFile::ContextParam param,
-                                      TheISA::RegFile::ContextVal val)
+    virtual void changeRegFileContext(TheISA::RegContextParam param,
+                                      TheISA::RegContextVal val)
     { panic("Not supported on Mips!"); }
 
     /** This function exits the thread context in the CPU and returns
