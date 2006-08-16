@@ -33,12 +33,21 @@ import os, sys
 
 # find path to directory containing this file
 tests_root = os.path.dirname(__file__)
+test_progs = os.path.join(tests_root, 'test-progs')
+
+# generate path to binary file
+def binpath(app, file=None):
+    # executable has same name as app unless specified otherwise
+    if not file:
+        file = app
+    return os.path.join(test_progs, app, 'bin', isa, opsys, file)
 
 # build configuration
 execfile(os.path.join(tests_root, config + '.py'))
 
 # set default maxtick... script can override
-maxtick = 1000000
+# -1 means run forever
+maxtick = -1
 
 # tweak configuration for specific test
 
