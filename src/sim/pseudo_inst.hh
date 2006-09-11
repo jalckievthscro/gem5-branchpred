@@ -59,4 +59,6 @@ namespace AlphaPseudo
     void debugbreak(ThreadContext *tc);
     void switchcpu(ThreadContext *tc);
     void addsymbol(ThreadContext *tc, Addr addr, Addr symbolAddr);
+    void anBegin(ThreadContext *tc, uint64_t cur);
+    void anWait(ThreadContext *tc, uint64_t cur, uint64_t wait);
 }
