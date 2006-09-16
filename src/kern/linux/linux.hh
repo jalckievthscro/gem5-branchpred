@@ -38,48 +38,33 @@ class Linux {};
 
 #else //!FULL_SYSTEM
 
-#include <dirent.h>
-#include <errno.h>
-#include <fcntl.h>	// for host open() flags
-#include <string.h>	// for memset()
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <unistd.h>
+#include <inttypes.h>
 
-#include "arch/isa_traits.hh"
-#include "sim/syscall_emul.hh"
-
-class TranslatingPort;
+#include "kern/operatingsystem.hh"
 
 ///
 /// This class encapsulates the types, structures, constants,
 /// functions, and syscall-number mappings specific to the Alpha Linux
 /// syscall interface.
 ///
-class Linux {
+class Linux : public OperatingSystem
+{
 
   public:
 
     //@{
     /// Basic Linux types.
-    typedef uint64_t size_t;
+/*    typedef uint64_t size_t;
     typedef uint64_t off_t;
     typedef int64_t time_t;
     typedef uint32_t uid_t;
-    typedef uint32_t gid_t;
+    typedef uint32_t gid_t;*/
     //@}
 
-#if NO_STAT64
-    typedef struct stat hst_stat;
-    typedef struct stat hst_stat64;
-#else
-    typedef struct stat hst_stat ;
-    typedef struct stat64 hst_stat64;
-#endif
-
     /// Stat buffer.  Note that we can't call it 'stat' since that
-    /// gets #defined to something else on some systems.
-    struct tgt_stat {
+    /// gets #defined to something else on some systems. This type
+    /// can be specialized by architecture specific "Linux" classes
+    typedef struct {
         uint32_t	st_dev;		//!< device
         uint32_t	st_ino;		//!< inode
         uint32_t	st_mode;	//!< mode
@@ -96,10 +81,10 @@ class Linux {
         int32_t		st_blocks;	//!< number of blocks allocated
         uint32_t	st_flags;	//!< flags
         uint32_t	st_gen;		//!< unknown
-    };
+    } tgt_stat;
 
     // same for stat64
-    struct tgt_stat64 {
+    typedef struct {
         uint64_t	st_dev;
         uint64_t	st_ino;
         uint64_t	st_rdev;
@@ -113,14 +98,14 @@ class Linux {
         uint32_t	st_nlink;
         uint32_t	__pad0;
 
-        uint64_t	tgt_st_atime;
+        uint64_t	st_atimeX;
         uint64_t 	st_atime_nsec;
-        uint64_t	tgt_st_mtime;
+        uint64_t	st_mtimeX;
         uint64_t	st_mtime_nsec;
-        uint64_t	tgt_st_ctime;
+        uint64_t	st_ctimeX;
         uint64_t	st_ctime_nsec;
         int64_t		___unused[3];
-    };
+    } tgt_stat64;
 
     /// Length of strings in struct utsname (plus 1 for null char).
     static const int _SYS_NMLN = 65;
@@ -172,110 +157,6 @@ class Linux {
         int64_t ru_nvcsw;		//!< voluntary context switches
         int64_t ru_nivcsw;		//!< involuntary "
     };
-
-    /// Helper function to convert a host stat buffer to a target stat
-    /// buffer.  Also copies the target buffer out to the simulated
-    /// memory space.  Used by stat(), fstat(), and lstat().
-#if !NO_STAT64
-    static void
-    copyOutStatBuf(TranslatingPort *mem, Addr addr, hst_stat *host)
-    {
-        using namespace TheISA;
-
-        TypedBufferArg<Linux::tgt_stat> tgt(addr);
-
-        tgt->st_dev = htog(host->st_dev);
-        tgt->st_ino = htog(host->st_ino);
-        tgt->st_mode = htog(host->st_mode);
-        tgt->st_nlink = htog(host->st_nlink);
-        tgt->st_uid = htog(host->st_uid);
-        tgt->st_gid = htog(host->st_gid);
-        tgt->st_rdev = htog(host->st_rdev);
-        tgt->st_size = htog(host->st_size);
-        tgt->st_atimeX = htog(host->st_atime);
-        tgt->st_mtimeX = htog(host->st_mtime);
-        tgt->st_ctimeX = htog(host->st_ctime);
-        tgt->st_blksize = htog(host->st_blksize);
-        tgt->st_blocks = htog(host->st_blocks);
-
-        tgt.copyOut(mem);
-    }
-#else
-    // Third version for bsd systems which no longer have any support for
-    // the old stat() call and stat() is actually a stat64()
-    static void
-    copyOutStatBuf(TranslatingPort *mem, Addr addr, hst_stat64 *host)
-    {
-        using namespace TheISA;
-
-        TypedBufferArg<Linux::tgt_stat> tgt(addr);
-
-        tgt->st_dev = htog(host->st_dev);
-        tgt->st_ino = htog(host->st_ino);
-        tgt->st_mode = htog(host->st_mode);
-        tgt->st_nlink = htog(host->st_nlink);
-        tgt->st_uid = htog(host->st_uid);
-        tgt->st_gid = htog(host->st_gid);
-        tgt->st_rdev = htog(host->st_rdev);
-        tgt->st_size = htog(host->st_size);
-        tgt->st_atimeX = htog(host->st_atime);
-        tgt->st_mtimeX = htog(host->st_mtime);
-        tgt->st_ctimeX = htog(host->st_ctime);
-        tgt->st_blksize = htog(host->st_blksize);
-        tgt->st_blocks = htog(host->st_blocks);
-
-        tgt.copyOut(mem);
-    }
-#endif
-
-
-    // Same for stat64
-    static void
-    copyOutStat64Buf(TranslatingPort *mem, int fd, Addr addr, hst_stat64 *host)
-    {
-        using namespace TheISA;
-
-        TypedBufferArg<Linux::tgt_stat64> tgt(addr);
-
-        // fd == 1 checks are because libc does some checks
-        // that the stdout is interactive vs. a file
-        // this makes it work on non-linux systems
-        if (fd == 1)
-            tgt->st_dev = htog((uint64_t)0xA);
-        else
-            tgt->st_dev = htog((uint64_t)host->st_dev);
-        // XXX What about STAT64_HAS_BROKEN_ST_INO ???
-        tgt->st_ino = htog((uint64_t)host->st_ino);
-        if (fd == 1)
-            tgt->st_rdev = htog((uint64_t)0x880d);
-        else
-            tgt->st_rdev = htog((uint64_t)host->st_rdev);
-        tgt->st_size = htog((int64_t)host->st_size);
-        tgt->st_blocks = htog((uint64_t)host->st_blocks);
-
-        if (fd == 1)
-            tgt->st_mode = htog((uint32_t)0x2190);
-        else
-            tgt->st_mode = htog((uint32_t)host->st_mode);
-        tgt->st_uid = htog((uint32_t)host->st_uid);
-        tgt->st_gid = htog((uint32_t)host->st_gid);
-        tgt->st_blksize = htog((uint32_t)host->st_blksize);
-        tgt->st_nlink = htog((uint32_t)host->st_nlink);
-        tgt->tgt_st_atime = htog((uint64_t)host->st_atime);
-        tgt->tgt_st_mtime = htog((uint64_t)host->st_mtime);
-        tgt->tgt_st_ctime = htog((uint64_t)host->st_ctime);
-#if defined(STAT_HAVE_NSEC)
-        tgt->st_atime_nsec = htog(host->st_atime_nsec);
-        tgt->st_mtime_nsec = htog(host->st_mtime_nsec);
-        tgt->st_ctime_nsec = htog(host->st_ctime_nsec);
-#else
-        tgt->st_atime_nsec = 0;
-        tgt->st_mtime_nsec = 0;
-        tgt->st_ctime_nsec = 0;
-#endif
-
-        tgt.copyOut(mem);
-    }
 
 };  // class Linux
 
