@@ -36,9 +36,10 @@
 #ifndef __ISA_FAKE_HH__
 #define __ISA_FAKE_HH__
 
-#include "dev/tsunami.hh"
 #include "base/range.hh"
 #include "dev/io_device.hh"
+#include "dev/tsunami.hh"
+#include "mem/packet.hh"
 
 /**
  * IsaFake is a device that returns -1 on all reads and
