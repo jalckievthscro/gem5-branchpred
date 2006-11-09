@@ -30,7 +30,7 @@
 
 #include <unistd.h>
 
-#define VERSION         0xA1000001
+#define VERSION         0xA1000002
 #define OWN_M5          0x000000AA
 #define OWN_LEGION      0x00000055
 
@@ -41,7 +41,7 @@ typedef struct {
     uint32_t version;
 
     uint64_t pc;
-    uint64_t instruction;
+    uint32_t instruction;
     uint64_t intregs[32];
 
 } SharedData;
