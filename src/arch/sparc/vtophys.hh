@@ -33,6 +33,7 @@
 #define __ARCH_SPARC_VTOPHYS_H__
 
 #include "arch/sparc/isa_traits.hh"
+#include "arch/sparc/pagetable.hh"
 
 class ThreadContext;
 class FunctionalPort;
