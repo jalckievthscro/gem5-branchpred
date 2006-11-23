@@ -38,9 +38,14 @@
 
 #include <string>
 
+class Checkpoint;
+
 namespace SparcISA
 {
     std::string getFloatRegName(RegIndex);
+
+    const int NumFloatArchRegs = 64;
+    const int NumFloatRegs = 64;
 
     typedef float float32_t;
     typedef double float64_t;
