@@ -40,6 +40,11 @@
     #include "cpu/o3/mips/impl.hh"
     #include "cpu/o3/mips/params.hh"
     #include "cpu/o3/mips/dyn_inst.hh"
+#elif THE_ISA == SPARC_ISA
+    #include "cpu/o3/sparc/cpu.hh"
+    #include "cpu/o3/sparc/impl.hh"
+    #include "cpu/o3/sparc/params.hh"
+    #include "cpu/o3/sparc/dyn_inst.hh"
 #else
     #error "ISA-specific header files O3CPU not defined ISA"
 #endif
