@@ -29,7 +29,6 @@
 import m5
 from m5.objects import *
 m5.AddToPath('../configs/common')
-from SysPaths import *
 from FSConfig import *
 from Benchmarks import *
 
