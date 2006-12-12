@@ -41,7 +41,7 @@ int main()
 
     range_map<Addr,int>::iterator i;
 
-    i = r.insert(RangeIn<Addr>(0,40),5);
+    i = r.insert(RangeIn<Addr>(10,40),5);
     assert(i != r.end());
     i = r.insert(RangeIn<Addr>(60,90),3);
     assert(i != r.end());
@@ -52,6 +52,17 @@ int main()
 
     i = r.find(RangeIn(55,55));
     assert(i == r.end());
+
+    i = r.insert(RangeIn<Addr>(0,12),1);
+    assert(i == r.end());
+
+    i = r.insert(RangeIn<Addr>(0,9),1);
+    assert(i != r.end());
+
+    i = r.find(RangeIn(20,30));
+    assert(i != r.end());
+    cout << i->first << " " << i->second << endl;
+
 }
 
 
