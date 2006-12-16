@@ -32,51 +32,22 @@
 #ifndef __ARCH_MIPS_SYSCALLRETURN_HH__
 #define __ARCH_MIPS_SYSCALLRETURN_HH__
 
-class SyscallReturn {
-        public:
-           template <class T>
-           SyscallReturn(T v, bool s)
-           {
-               retval = (uint32_t)v;
-               success = s;
-           }
-
-           template <class T>
-           SyscallReturn(T v)
-           {
-               success = (v >= 0);
-               retval = (uint32_t)v;
-           }
-
-           ~SyscallReturn() {}
-
-           SyscallReturn& operator=(const SyscallReturn& s) {
-               retval = s.retval;
-               success = s.success;
-               return *this;
-           }
-
-           bool successful() { return success; }
-           uint64_t value() { return retval; }
-
-
-       private:
-           uint64_t retval;
-           bool success;
-};
+#include "sim/syscallreturn.hh"
+#include "cpu/thread_context.hh"
 
 namespace MipsISA
 {
-    static inline void setSyscallReturn(SyscallReturn return_value, RegFile *regs)
+    static inline void setSyscallReturn(SyscallReturn return_value,
+            ThreadContext *tc)
     {
         if (return_value.successful()) {
             // no error
-            regs->setIntReg(SyscallSuccessReg, 0);
-            regs->setIntReg(ReturnValueReg1, return_value.value());
+            tc->setIntReg(SyscallSuccessReg, 0);
+            tc->setIntReg(ReturnValueReg1, return_value.value());
         } else {
             // got an error, return details
-            regs->setIntReg(SyscallSuccessReg, (IntReg) -1);
-            regs->setIntReg(ReturnValueReg1, -return_value.value());
+            tc->setIntReg(SyscallSuccessReg, (IntReg) -1);
+            tc->setIntReg(ReturnValueReg1, -return_value.value());
         }
     }
 }
