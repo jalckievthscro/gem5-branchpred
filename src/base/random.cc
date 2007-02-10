@@ -40,38 +40,20 @@
 #include <cstdlib>
 #include <cmath>
 
-
-#include "sim/param.hh"
 #include "base/random.hh"
-#include "base/trace.hh"
 
 using namespace std;
 
-class RandomContext : public ParamContext
+uint32_t
+getInt32()
 {
-  public:
-    RandomContext(const string &_iniSection)
-        : ::ParamContext(_iniSection) {}
-    ~RandomContext() {}
-
-    void checkParams();
-};
-
-RandomContext paramContext("random");
-
-Param<unsigned>
-seed(&paramContext, "seed", "seed to random number generator", 1);
-
-void
-RandomContext::checkParams()
-{
-    ::srand48(seed);
+    return mrand48() & 0xffffffff;
 }
 
-long
-getLong()
+double
+getDouble()
 {
-    return mrand48();
+    return drand48();
 }
 
 double
@@ -104,22 +86,4 @@ getUniformPos(uint64_t min, uint64_t max)
     r = drand48() * (max-min) + min;
 
     return (uint64_t)m5round(r);
-}
-
-
-// idea for generating a double from erand48
-double
-getDouble()
-{
-    union {
-        uint32_t _long[2];
-        uint16_t _short[4];
-    };
-
-    _long[0] = mrand48();
-    _long[1] = mrand48();
-
-    return ldexp((double) _short[0], -48) +
-        ldexp((double) _short[1], -32) +
-        ldexp((double) _short[2], -16);
 }
