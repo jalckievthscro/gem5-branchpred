@@ -32,6 +32,7 @@
 #define __ARCH_SPARC_TYPES_HH__
 
 #include <inttypes.h>
+#include "base/bigint.hh"
 
 namespace SparcISA
 {
@@ -39,6 +40,7 @@ namespace SparcISA
     typedef uint64_t ExtMachInst;
 
     typedef uint64_t IntReg;
+    typedef Twin64_t LargestRead;
     typedef uint64_t MiscReg;
     typedef double FloatReg;
     typedef uint64_t FloatRegBits;
