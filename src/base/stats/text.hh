@@ -34,6 +34,7 @@
 #include <iosfwd>
 #include <string>
 
+#include "base/output.hh"
 #include "base/stats/output.hh"
 
 namespace Stats {
@@ -72,6 +73,8 @@ class Text : public Output
     virtual bool valid() const;
     virtual void output();
 };
+
+bool initText(const std::string &filename, bool desc=true, bool compat=true);
 
 /* namespace Stats */ }
 
