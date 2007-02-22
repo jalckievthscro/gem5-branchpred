@@ -33,7 +33,7 @@ class ThreadContext;
 //We need the "Tick" and "Addr" data types from here
 #include "sim/host.hh"
 
-namespace AlphaPseudo
+namespace PseudoInst
 {
     /**
      * @todo these externs are only here for a hack in fullCPU::takeOver...
