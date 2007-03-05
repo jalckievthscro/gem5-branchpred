@@ -58,10 +58,103 @@
 #ifndef __ARCH_X86_REGFILE_HH__
 #define __ARCH_X86_REGFILE_HH__
 
-#error X86 is not yet supported!
+#include "arch/x86/floatregfile.hh"
+#include "arch/x86/intregfile.hh"
+#include "arch/x86/isa_traits.hh"
+#include "arch/x86/miscregfile.hh"
+#include "arch/x86/types.hh"
+#include "sim/host.hh"
+
+#include <string>
+
+class Checkpoint;
 
 namespace X86ISA
 {
-};
+    class RegFile
+    {
+      protected:
+        Addr rip; //Program Counter
+        Addr nextRip; //Next Program Counter
+
+      public:
+        Addr readPC();
+        void SetPC(Addr val);
+
+        Addr readNextPC();
+        void setNextPC(Addr val);
+
+        Addr readNextNPC();
+        void setNextNPC(Addr val);
+
+      protected:
+        IntRegFile intRegFile; // integer register file
+        FloatRegFile floatRegFile; // floating point register file
+        MiscRegFile miscRegFile; // control register file
+
+      public:
+
+        void clear();
+
+        int FlattenIntIndex(int reg);
+
+        MiscReg readMiscReg(int miscReg);
+
+        MiscReg readMiscRegWithEffect(int miscReg, ThreadContext *tc);
+
+        void setMiscReg(int miscReg, const MiscReg &val);
+
+        void setMiscRegWithEffect(int miscReg, const MiscReg &val,
+                ThreadContext * tc);
+
+        int instAsid()
+        {
+            //XXX This doesn't make sense in x86
+            return 0;
+        }
+
+        int dataAsid()
+        {
+            //XXX This doesn't make sense in x86
+            return 0;
+        }
+
+        FloatReg readFloatReg(int floatReg, int width);
+
+        FloatReg readFloatReg(int floatReg);
+
+        FloatRegBits readFloatRegBits(int floatReg, int width);
+
+        FloatRegBits readFloatRegBits(int floatReg);
+
+        void setFloatReg(int floatReg, const FloatReg &val, int width);
+
+        void setFloatReg(int floatReg, const FloatReg &val);
+
+        void setFloatRegBits(int floatReg, const FloatRegBits &val, int width);
+
+        void setFloatRegBits(int floatReg, const FloatRegBits &val);
+
+        IntReg readIntReg(int intReg);
+
+        void setIntReg(int intReg, const IntReg &val);
+
+        void serialize(std::ostream &os);
+        void unserialize(Checkpoint *cp, const std::string &section);
+
+      public:
+
+        void changeContext(RegContextParam param, RegContextVal val);
+    };
+
+    int flattenIntIndex(ThreadContext * tc, int reg);
+
+    void copyRegs(ThreadContext *src, ThreadContext *dest);
+
+    void copyMiscRegs(ThreadContext *src, ThreadContext *dest);
+
+    int InterruptLevel(uint64_t softint);
+
+}; // namespace X86ISA
 
 #endif // __ARCH_X86_REGFILE_HH__
