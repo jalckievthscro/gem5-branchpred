@@ -100,7 +100,7 @@ string X86ISA::getMiscRegName(RegIndex index)
 
 void MiscRegFile::clear()
 {
-    panic("No misc registers in x86 yet!\n");
+    //When there are actually misc regs implemented, this will clear them
 }
 
 MiscReg MiscRegFile::readReg(int miscReg)
