@@ -28,12 +28,21 @@
  * Authors: Ali Saidi
  */
 
+#include <iostream>
+
 #ifndef __BASE_BIGINT_HH__
 #define __BASE_BIGINT_HH__
 // Create a couple of large int types for atomic reads
 struct m5_twin64_t {
     uint64_t a;
     uint64_t b;
+    m5_twin64_t()
+    {}
+    m5_twin64_t(const uint64_t x)
+    {
+        a = x;
+        b = x;
+    }
     inline m5_twin64_t& operator=(const uint64_t x)
     {
         a = x;
@@ -45,6 +54,13 @@ struct m5_twin64_t {
 struct m5_twin32_t {
     uint32_t a;
     uint32_t b;
+    m5_twin32_t()
+    {}
+    m5_twin32_t(const uint32_t x)
+    {
+        a = x;
+        b = x;
+    }
     inline m5_twin32_t& operator=(const uint32_t x)
     {
         a = x;
@@ -59,6 +75,9 @@ struct m5_twin32_t {
 typedef m5_twin64_t Twin64_t;
 typedef m5_twin32_t Twin32_t;
 
+// Output operator overloads
+std::ostream & operator << (std::ostream & os, const Twin64_t & t);
+std::ostream & operator << (std::ostream & os, const Twin32_t & t);
 
 #endif // __BASE_BIGINT_HH__
 
