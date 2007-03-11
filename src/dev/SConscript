@@ -29,51 +29,29 @@
 # Authors: Steve Reinhardt
 #          Gabe Black
 
-import os.path, sys
+Import('*')
 
-# Import build environment variable from SConstruct.
-Import('env')
-
-# Right now there are no source files immediately in this directory
-sources = []
-
-#
-# Now include other ISA-specific sources from the ISA subdirectories.
-#
-
-isa = env['TARGET_ISA'] # someday this may be a list of ISAs
-
-#
-# These source files can be used by any architecture
-#
-
-sources += Split('''
-	baddev.cc
-	disk_image.cc
-	etherbus.cc
-	etherdump.cc
-	etherint.cc
-	etherlink.cc
-	etherpkt.cc
-	ethertap.cc	
-        ide_ctrl.cc
-	ide_disk.cc
-	io_device.cc
-	isa_fake.cc
-	ns_gige.cc
-	pciconfigall.cc
-	pcidev.cc
-	pktfifo.cc
-	platform.cc
-        simconsole.cc
-	simple_disk.cc
-	''')
-
-# Let the target architecture define what additional sources it needs
-sources += SConscript(os.path.join(isa, 'SConscript'), exports = 'env')
-
-# Convert file names to SCons File objects.  This takes care of the
-# path relative to the top of the directory tree.
-sources = [File(s) for s in sources]
-
-Return('sources')
+if env['FULL_SYSTEM']:
+    Source('baddev.cc')
+    Source('disk_image.cc')
+    Source('etherbus.cc')
+    Source('etherdump.cc')
+    Source('etherint.cc')
+    Source('etherlink.cc')
+    Source('etherpkt.cc')
+    Source('ethertap.cc')	
+    #Source('i8254xGBe.cc')
+    Source('ide_ctrl.cc')
+    Source('ide_disk.cc')
+    Source('io_device.cc')
+    Source('isa_fake.cc')
+    Source('ns_gige.cc')
+    Source('pciconfigall.cc')
+    Source('pcidev.cc')
+    Source('pktfifo.cc')
+    Source('platform.cc')
+    Source('simconsole.cc')
+    Source('simple_disk.cc')
+    #Source('sinic.cc')
+    Source('uart.cc')
+    Source('uart8250.cc')
