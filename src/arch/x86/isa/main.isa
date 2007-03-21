@@ -79,10 +79,10 @@ namespace X86ISA;
 ##include "operands.isa"
 
 //Include the base class for x86 instructions, and some support code
-//##include "base.isa"
+##include "base.isa"
 
 //Include the definitions for the instruction formats
 ##include "formats/formats.isa"
 
 //Include the decoder definition
-##include "decoder.isa"
+##include "decoder/decoder.isa"
