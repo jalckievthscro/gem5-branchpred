@@ -103,9 +103,6 @@ let {{
             self.reg = match.group("reg")
             self.tag = match.group("tag")
             self.size = match.group("size")
-}};
-
-let {{
 
     # This function specializes the given piece of code to use a particular
     # set of argument types described by "opTypes". These are "implemented"
