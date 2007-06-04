@@ -56,8 +56,11 @@
 //Common microop stuff
 ##include "base.isa"
 
-//Miscellaneous microop definitions
-##include "specop.isa"
-
 //Register microop definitions
 ##include "regop.isa"
+
+//Load immediate microop definition
+##include "limmop.isa"
+
+//Miscellaneous microop definitions
+##include "specop.isa"
