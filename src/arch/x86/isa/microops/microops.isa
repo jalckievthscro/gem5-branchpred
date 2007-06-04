@@ -56,8 +56,8 @@
 //Common microop stuff
 ##include "base.isa"
 
-//A microop that generates a specified fault
-##include "fault.isa"
+//Miscellaneous microop definitions
+##include "specop.isa"
 
-//Integer microop definitions
-##include "int.isa"
+//Register microop definitions
+##include "regop.isa"
