@@ -62,5 +62,8 @@
 //Load immediate microop definition
 ##include "limmop.isa"
 
+//Load/store microop definitions
+##include "ldstop.isa"
+
 //Miscellaneous microop definitions
 ##include "specop.isa"
