@@ -47,8 +47,21 @@ namespace MipsISA
     }
 
     enum MiscIntRegNums {
-       HI = NumIntArchRegs,
-       LO
+       LO = NumIntArchRegs,
+       HI,
+       DSPACX0,
+       DSPLo1,
+       DSPHi1,
+       DSPACX1,
+       DSPLo2,
+       DSPHi2,
+       DSPACX2,
+       DSPLo3,
+       DSPHi3,
+       DSPACX3,
+       DSPControl,
+       DSPLo0 = LO,
+       DSPHi0 = HI
     };
 
     class IntRegFile
@@ -57,6 +70,8 @@ namespace MipsISA
         IntReg regs[NumIntRegs];
 
       public:
+        void clear() { bzero(&regs, sizeof(regs)); }
+
         IntReg readReg(int intReg)
         {
             return regs[intReg];
@@ -64,7 +79,10 @@ namespace MipsISA
 
         Fault setReg(int intReg, const IntReg &val)
         {
-            regs[intReg] = val;
+            if (intReg != ZeroReg) {
+                regs[intReg] = val;
+            }
+
             return NoFault;
         }
 
