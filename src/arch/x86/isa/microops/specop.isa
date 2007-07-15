@@ -60,7 +60,7 @@
 //////////////////////////////////////////////////////////////////////////
 
 output header {{
-    class MicroFault : public X86MicroopBase
+    class MicroFault : public X86ISA::X86MicroopBase
     {
       protected:
         Fault fault;
