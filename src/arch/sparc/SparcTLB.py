@@ -35,8 +35,14 @@ class SparcTLB(SimObject):
 
 class SparcDTB(SparcTLB):
     type = 'SparcDTB'
+    cxx_namespace = 'SparcISA'
+    cxx_class = 'DTB'
+
     size = 64
 
 class SparcITB(SparcTLB):
     type = 'SparcITB'
+    cxx_namespace = 'SparcISA'
+    cxx_class = 'ITB'
+
     size = 64
