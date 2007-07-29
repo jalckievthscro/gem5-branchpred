@@ -32,6 +32,7 @@ Import('*')
 
 SimObject('Root.py')
 SimObject('System.py')
+SimObject('InstTracer.py')
 
 Source('async.cc')
 Source('core.cc')
