@@ -99,6 +99,10 @@
 //thing on a variety of inputs
 ##include "multi.isa"
 
+//Include a format which implements an extra layer of decoding to handle the
+//repe and repne prefixes
+##include "string.isa"
+
 //Include a format which makes instructions who's sole purpose is to generate
 //a syscall.
 ##include "syscall.isa"
