@@ -54,10 +54,8 @@ class SparcSimpleParams : public O3Params
 {
   public:
 
-#if FULL_SYSTEM
     SparcISA::ITB *itb;
     SparcISA::DTB *dtb;
-#endif
 };
 
 #endif // __CPU_O3_SPARC_PARAMS_HH__

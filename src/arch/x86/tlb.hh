@@ -58,10 +58,23 @@
 #ifndef __ARCH_X86_TLB_HH__
 #define __ARCH_X86_TLB_HH__
 
-#error X86 is not yet supported!
+#include "sim/tlb.hh"
 
 namespace X86ISA
 {
+    class ITB : public GenericITB
+    {
+      public:
+        ITB(const std::string &name) : GenericITB(name)
+        {}
+    };
+
+    class DTB : public GenericDTB
+    {
+      public:
+        DTB(const std::string &name) : GenericDTB(name)
+        {}
+    };
 };
 
 #endif // __ARCH_X86_TLB_HH__
