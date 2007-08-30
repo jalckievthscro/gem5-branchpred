@@ -68,6 +68,7 @@ categories = ["arithmetic",
               "processor_information",
               "rotate_and_shift",
               "semaphores",
+              "sse",
               "string",
               "system_calls",
               "system"]
