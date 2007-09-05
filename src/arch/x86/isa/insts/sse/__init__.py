@@ -53,7 +53,8 @@
 #
 # Authors: Gabe Black
 
-categories = ["move"]
+categories = ["move",
+              "convert"]
 
 microcode = '''
 # SSE instructions
