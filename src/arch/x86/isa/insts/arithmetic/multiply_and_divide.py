@@ -83,8 +83,12 @@ def macroop MUL_B_P
 
 def macroop MUL_R
 {
-    muleh rdx, rax, reg
+    # We need to store the result of the multiplication in a temporary
+    # and then move it later because reg may be rdx. If it is, we can't
+    # clobber its old value yet.
+    muleh t1, rax, reg
     mulel rax, rax, reg
+    mov rdx, rdx, t1
 };
 
 def macroop MUL_M
