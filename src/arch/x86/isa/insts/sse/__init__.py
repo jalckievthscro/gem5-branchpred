@@ -57,7 +57,8 @@ categories = ["move",
               "convert",
               "add_and_subtract",
               "multiply_and_divide",
-              "logical"]
+              "logical",
+              "compare"]
 
 microcode = '''
 # SSE instructions
