@@ -62,6 +62,47 @@
 
 namespace X86ISA
 {
+    namespace ConditionTests
+    {
+        enum CondTest {
+            True,
+            NotFalse = True,
+            ECF,
+            EZF,
+            SZnZF,
+            MSTRZ,
+            STRZ,
+            MSTRC,
+            STRZnEZF,
+            OF,
+            CF,
+            ZF,
+            CvZF,
+            SF,
+            PF,
+            SxOF,
+            SxOvZF,
+
+            False,
+            NotTrue = False,
+            NotECF,
+            NotEZF,
+            NotSZnZF,
+            NotMSTRZ,
+            NotSTRZ,
+            NotMSTRC,
+            STRnZnEZF,
+            NotOF,
+            NotCF,
+            NotZF,
+            NotCvZF,
+            NotSF,
+            NotPF,
+            NotSxOF,
+            NotSxOvZF
+        };
+    }
+
     //A class which is the base of all x86 micro ops. It provides a function to
     //set necessary flags appropriately.
     class X86MicroopBase : public X86StaticInst
@@ -94,6 +135,8 @@ namespace X86ISA
 
             return ss.str();
         }
+
+        bool checkCondition(uint64_t flags, int condition) const;
     };
 }
 
