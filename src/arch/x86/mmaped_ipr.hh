@@ -75,6 +75,8 @@ namespace X86ISA
     {
 #if !FULL_SYSTEM
         panic("Shouldn't have a memory mapped register in SE\n");
+#else
+        panic("Memory mapped registers aren't implemented for x86!\n");
 #endif
     }
 
@@ -83,6 +85,8 @@ namespace X86ISA
     {
 #if !FULL_SYSTEM
         panic("Shouldn't have a memory mapped register in SE\n");
+#else
+        panic("Memory mapped registers aren't implemented for x86!\n");
 #endif
     }
 };
