@@ -58,11 +58,11 @@
 #ifndef __ARCH_X86_TLB_HH__
 #define __ARCH_X86_TLB_HH__
 
+#include <list>
+
+#include "arch/x86/pagetable.hh"
+#include "arch/x86/segmentregs.hh"
 #include "config/full_system.hh"
-
-#if FULL_SYSTEM
-
-#include "arch/segmentregs.hh"
 #include "mem/request.hh"
 #include "params/X86DTB.hh"
 #include "params/X86ITB.hh"
@@ -76,102 +76,75 @@ namespace X86ISA
 {
     static const unsigned StoreCheck = 1 << NUM_SEGMENTREGS;
 
-    struct TlbEntry
+    class TLB : public SimObject
     {
-        Addr pageStart;
-        TlbEntry() {}
-        TlbEntry(Addr paddr) : pageStart(paddr) {}
+#if !FULL_SYSTEM
+      protected:
+        friend class FakeITLBFault;
+        friend class FakeDTLBFault;
+#endif
+      public:
+        typedef X86TLBParams Params;
+        TLB(const Params *p);
 
-        void serialize(std::ostream &os);
-        void unserialize(Checkpoint *cp, const std::string &section);
+        void dumpAll();
+
+        TlbEntry *lookup(Addr va, bool update_lru = true);
+
+      protected:
+        int size;
+
+        TlbEntry * tlb;
+
+        typedef std::list<TlbEntry *> EntryList;
+        EntryList freeList;
+        EntryList entryList;
+
+        void insert(Addr vpn, TlbEntry &entry);
+
+        void invalidateAll();
+
+        void invalidateNonGlobal();
+
+        void demapPage(Addr va);
+
+      public:
+        // Checkpointing
+        virtual void serialize(std::ostream &os);
+        virtual void unserialize(Checkpoint *cp, const std::string &section);
     };
 
-class TLB : public SimObject
-{
-  public:
-    typedef X86TLBParams Params;
-    TLB(const Params *p);
-
-    void dumpAll();
-
-    // Checkpointing
-    virtual void serialize(std::ostream &os);
-    virtual void unserialize(Checkpoint *cp, const std::string &section);
-};
-
-class ITB : public TLB
-{
-  public:
-    typedef X86ITBParams Params;
-    ITB(const Params *p) : TLB(p)
+    class ITB : public TLB
     {
-    }
+      public:
+        typedef X86ITBParams Params;
+        ITB(const Params *p) : TLB(p)
+        {
+        }
 
-    Fault translate(RequestPtr &req, ThreadContext *tc);
+        Fault translate(RequestPtr &req, ThreadContext *tc);
 
-    friend class DTB;
-};
+        friend class DTB;
+    };
 
-class DTB : public TLB
-{
-  public:
-    typedef X86DTBParams Params;
-    DTB(const Params *p) : TLB(p)
+    class DTB : public TLB
     {
-    }
+      public:
+        typedef X86DTBParams Params;
+        DTB(const Params *p) : TLB(p)
+        {
+        }
 
-    Fault translate(RequestPtr &req, ThreadContext *tc, bool write);
+        Fault translate(RequestPtr &req, ThreadContext *tc, bool write);
 #if FULL_SYSTEM
-    Tick doMmuRegRead(ThreadContext *tc, Packet *pkt);
-    Tick doMmuRegWrite(ThreadContext *tc, Packet *pkt);
+        Tick doMmuRegRead(ThreadContext *tc, Packet *pkt);
+        Tick doMmuRegWrite(ThreadContext *tc, Packet *pkt);
 #endif
 
-    // Checkpointing
-    virtual void serialize(std::ostream &os);
-    virtual void unserialize(Checkpoint *cp, const std::string &section);
-};
-
+        // Checkpointing
+        virtual void serialize(std::ostream &os);
+        virtual void unserialize(Checkpoint *cp, const std::string &section);
+    };
 }
-
-#else
-
-#include <iostream>
-
-#include "arch/x86/segmentregs.hh"
-#include "sim/host.hh"
-#include "sim/tlb.hh"
-
-class Checkpoint;
-
-namespace X86ISA
-{
-    static const unsigned StoreCheck = 1 << NUM_SEGMENTREGS;
-
-    struct TlbEntry
-    {
-        Addr pageStart;
-        TlbEntry() {}
-        TlbEntry(Addr paddr) : pageStart(paddr) {}
-
-        void serialize(std::ostream &os);
-        void unserialize(Checkpoint *cp, const std::string &section);
-    };
-
-    class ITB : public GenericTLB
-    {
-      public:
-        ITB(const Params *p) : GenericTLB(p)
-        {}
-    };
-
-    class DTB : public GenericTLB
-    {
-      public:
-        DTB(const Params *p) : GenericTLB(p)
-        {}
-    };
-};
-
-#endif
 
 #endif // __ARCH_X86_TLB_HH__
