@@ -53,7 +53,8 @@
 #
 # Authors: Gabe Black
 
-categories = ["undefined_operation",
+categories = ["halt",
+              "undefined_operation",
               "msrs"]
 
 microcode = ""
