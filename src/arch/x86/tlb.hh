@@ -77,21 +77,26 @@ class Packet;
 
 namespace X86ISA
 {
+    class Walker;
+
     static const unsigned StoreCheck = 1 << NUM_SEGMENTREGS;
 
     class TLB;
 
-    class TLB : public MemObject
+    class TLB : public SimObject
     {
       protected:
         friend class FakeITLBFault;
         friend class FakeDTLBFault;
 
-        System * sys;
-
-        bool allowNX;
+        bool _allowNX;
 
       public:
+        bool allowNX() const
+        {
+            return _allowNX;
+        }
+
         typedef X86TLBParams Params;
         TLB(const Params *p);
 
@@ -101,119 +106,11 @@ namespace X86ISA
 
 #if FULL_SYSTEM
       protected:
-        class Walker
-        {
-          public:
-            enum State {
-                Ready,
-                Waiting,
-                LongPML4,
-                LongPDP,
-                LongPD,
-                LongPTE,
-                PAEPDP,
-                PAEPD,
-                PAEPTE,
-                PSEPD,
-                PD,
-                PTE
-            };
 
-            // Act on the current state and determine what to do next. read
-            // should be the packet that just came back from a read and write
-            // should be NULL. When the function returns, read is either NULL
-            // if the machine is finished, or points to a packet to initiate
-            // the next read. If any write is required to update an "accessed"
-            // bit, write will point to a packet to do the write. Otherwise it
-            // will be NULL.
-            void doNext(PacketPtr &read, PacketPtr &write);
+        Walker * walker;
 
-            // Kick off the state machine.
-            void start(ThreadContext * _tc, Addr vaddr);
-
-          protected:
-            friend class TLB;
-
-            /*
-             * State having to do with sending packets.
-             */
-            PacketPtr read;
-            std::vector<PacketPtr> writes;
-
-            // How many memory operations are in flight.
-            unsigned inflight;
-
-            bool retrying;
-
-            /*
-             * Functions for dealing with packets.
-             */
-            bool recvTiming(PacketPtr pkt);
-            void recvRetry();
-
-            void sendPackets();
-
-            /*
-             * Port for accessing memory
-             */
-            class WalkerPort : public Port
-            {
-              public:
-                WalkerPort(const std::string &_name, Walker * _walker) :
-                      Port(_name, _walker->tlb), walker(_walker),
-                      snoopRangeSent(false)
-                {}
-
-              protected:
-                Walker * walker;
-
-                bool snoopRangeSent;
-
-                bool recvTiming(PacketPtr pkt);
-                Tick recvAtomic(PacketPtr pkt);
-                void recvFunctional(PacketPtr pkt);
-                void recvStatusChange(Status status);
-                void recvRetry();
-                void getDeviceAddressRanges(AddrRangeList &resp,
-                        bool &snoop)
-                {
-                    resp.clear();
-                    snoop = true;
-                }
-            };
-
-            friend class WalkerPort;
-
-            WalkerPort port;
-
-            // The TLB we're supposed to load.
-            TLB * tlb;
-
-            /*
-             * State machine state.
-             */
-            ThreadContext * tc;
-            State state;
-            State nextState;
-            int size;
-            bool enableNX;
-            TlbEntry entry;
-
-          public:
-            Walker(const std::string &_name, TLB * _tlb) :
-                read(NULL), inflight(0), retrying(false),
-                port(_name + "-walker_port", this),
-                tlb(_tlb),
-                tc(NULL), state(Ready), nextState(Ready)
-            {
-            }
-        };
-
-        Walker walker;
-
+        void walk(ThreadContext * _tc, Addr vaddr);
 #endif
-
-        Port *getPort(const std::string &if_name, int idx = -1);
 
       public:
         void invalidateAll();
@@ -231,13 +128,14 @@ namespace X86ISA
         EntryList freeList;
         EntryList entryList;
 
-        void insert(Addr vpn, TlbEntry &entry);
-
         template<class TlbFault>
         Fault translate(RequestPtr &req, ThreadContext *tc,
                 bool write, bool execute);
 
       public:
+
+        void insert(Addr vpn, TlbEntry &entry);
+
         // Checkpointing
         virtual void serialize(std::ostream &os);
         virtual void unserialize(Checkpoint *cp, const std::string &section);
@@ -249,8 +147,7 @@ namespace X86ISA
         typedef X86ITBParams Params;
         ITB(const Params *p) : TLB(p)
         {
-            sys = p->system;
-            allowNX = false;
+            _allowNX = false;
         }
 
         Fault translate(RequestPtr &req, ThreadContext *tc);
@@ -264,8 +161,7 @@ namespace X86ISA
         typedef X86DTBParams Params;
         DTB(const Params *p) : TLB(p)
         {
-            sys = p->system;
-            allowNX = true;
+            _allowNX = true;
         }
         Fault translate(RequestPtr &req, ThreadContext *tc, bool write);
 #if FULL_SYSTEM
