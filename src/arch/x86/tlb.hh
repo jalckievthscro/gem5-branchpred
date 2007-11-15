@@ -59,10 +59,13 @@
 #define __ARCH_X86_TLB_HH__
 
 #include <list>
+#include <vector>
+#include <string>
 
 #include "arch/x86/pagetable.hh"
 #include "arch/x86/segmentregs.hh"
 #include "config/full_system.hh"
+#include "mem/mem_object.hh"
 #include "mem/request.hh"
 #include "params/X86DTB.hh"
 #include "params/X86ITB.hh"
@@ -74,22 +77,47 @@ class Packet;
 
 namespace X86ISA
 {
+    class Walker;
+
     static const unsigned StoreCheck = 1 << NUM_SEGMENTREGS;
+
+    class TLB;
 
     class TLB : public SimObject
     {
-#if !FULL_SYSTEM
       protected:
         friend class FakeITLBFault;
         friend class FakeDTLBFault;
-#endif
+
+        bool _allowNX;
+
       public:
+        bool allowNX() const
+        {
+            return _allowNX;
+        }
+
         typedef X86TLBParams Params;
         TLB(const Params *p);
 
         void dumpAll();
 
         TlbEntry *lookup(Addr va, bool update_lru = true);
+
+#if FULL_SYSTEM
+      protected:
+
+        Walker * walker;
+
+        void walk(ThreadContext * _tc, Addr vaddr);
+#endif
+
+      public:
+        void invalidateAll();
+
+        void invalidateNonGlobal();
+
+        void demapPage(Addr va);
 
       protected:
         int size;
@@ -100,19 +128,14 @@ namespace X86ISA
         EntryList freeList;
         EntryList entryList;
 
-        void insert(Addr vpn, TlbEntry &entry);
-
-        void invalidateAll();
-
-        void invalidateNonGlobal();
-
-        void demapPage(Addr va);
-
         template<class TlbFault>
         Fault translate(RequestPtr &req, ThreadContext *tc,
                 bool write, bool execute);
 
       public:
+
+        void insert(Addr vpn, TlbEntry &entry);
+
         // Checkpointing
         virtual void serialize(std::ostream &os);
         virtual void unserialize(Checkpoint *cp, const std::string &section);
@@ -124,6 +147,7 @@ namespace X86ISA
         typedef X86ITBParams Params;
         ITB(const Params *p) : TLB(p)
         {
+            _allowNX = false;
         }
 
         Fault translate(RequestPtr &req, ThreadContext *tc);
@@ -137,6 +161,7 @@ namespace X86ISA
         typedef X86DTBParams Params;
         DTB(const Params *p) : TLB(p)
         {
+            _allowNX = true;
         }
         Fault translate(RequestPtr &req, ThreadContext *tc, bool write);
 #if FULL_SYSTEM
