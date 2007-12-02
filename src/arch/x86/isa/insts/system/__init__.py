@@ -55,7 +55,8 @@
 
 categories = ["halt",
               "undefined_operation",
-              "msrs"]
+              "msrs",
+              "segmentation"]
 
 microcode = ""
 for category in categories:
