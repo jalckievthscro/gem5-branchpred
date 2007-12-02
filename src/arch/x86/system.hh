@@ -79,8 +79,10 @@ class X86System : public System
  * Serialization stuff
  */
   public:
-    virtual void serialize(std::ostream &os);
-    virtual void unserialize(Checkpoint *cp, const std::string &section);
+    void serialize(std::ostream &os);
+    void unserialize(Checkpoint *cp, const std::string &section);
+
+    void startup();
 
   protected:
     const Params *params() const { return (const Params *)_params; }
