@@ -32,6 +32,6 @@
 Import('*')
 
 if env['FULL_SYSTEM'] and env['TARGET_ISA'] == 'x86':
-    SimObject('Opteron.py')
+    SimObject('PC.py')
 
-    Source('opteron.cc')
+    Source('pc.cc')
