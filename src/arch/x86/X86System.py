@@ -1,4 +1,4 @@
-# Copyright (c) 2007 The Hewlett-Packard Development Company
+# Copyright (c) 2007-2008 The Hewlett-Packard Development Company
 # All rights reserved.
 #
 # Redistribution and use of this software in source and binary forms,
@@ -54,6 +54,7 @@
 # Authors: Gabe Black
 
 from m5.params import *
+from E820 import X86E820Table, X86E820Entry
 from System import System
 
 class X86System(System):
@@ -61,3 +62,6 @@ class X86System(System):
 
 class LinuxX86System(X86System):
     type = 'LinuxX86System'
+
+    e820_table = Param.X86E820Table(
+            X86E820Table(), 'E820 map of physical memory')
