@@ -39,12 +39,14 @@
 #include "sim/startup.hh"
 
 extern const char *compileDate;
+std::vector<std::string> compileFlags();
 extern const char *hgRev;
 extern const char *hgDate;
 %}
 
 %include "stdint.i"
 %include "std_string.i"
+%include "std_vector.i"
 %include "sim/host.hh"
 
 void setOutputDir(const std::string &dir);
@@ -52,7 +54,12 @@ void setOutputFile(const std::string &file);
 void SimStartup();
 void doExitCleanup();
 
+%immutable compileDate;
 char *compileDate;
+
+namespace std { %template(StringVector) vector<string>; }
+std::vector<std::string> compileFlags();
+
 char *hgRev;
 char *hgDate;
 
