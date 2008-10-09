@@ -28,9 +28,9 @@
  * Authors: Kevin Lim
  */
 
-#include "cpu/o3/alpha/dyn_inst_impl.hh"
 #include "cpu/o3/alpha/impl.hh"
+#include "cpu/o3/dyn_inst_impl.hh"
 
 // Force instantiation of AlphaDynInst for all the implementations that
 // are needed.
-template class AlphaDynInst<AlphaSimpleImpl>;
+template class BaseO3DynInst<AlphaSimpleImpl>;
