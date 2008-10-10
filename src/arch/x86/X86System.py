@@ -55,10 +55,13 @@
 
 from m5.params import *
 from E820 import X86E820Table, X86E820Entry
+from SMBios import X86SMBiosSMBiosTable
 from System import System
 
 class X86System(System):
     type = 'X86System'
+    smbios_table = Param.X86SMBiosSMBiosTable(
+            X86SMBiosSMBiosTable(), 'table of smbios/dmi information')
 
 class LinuxX86System(X86System):
     type = 'LinuxX86System'
