@@ -41,3 +41,6 @@ if env['FULL_SYSTEM'] and env['TARGET_ISA'] == 'x86':
     SimObject('I8259.py')
     Source('i8259.cc')
     TraceFlag('I8259', 'Accesses to the I8259 PIC devices')
+
+    SimObject('X86IntPin.py')
+    Source('intdev.cc')
