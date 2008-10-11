@@ -29,6 +29,7 @@
 from m5.params import *
 from m5.proxy import *
 from Cmos import Cmos
+from I82094AA import I82094AA
 from I8254 import I8254
 from I8259 import I8259
 from PcSpeaker import PcSpeaker
@@ -48,15 +49,18 @@ class SouthBridge(SimObject):
     _cmos = Cmos(pio_addr=x86IOAddress(0x70))
     _pit = I8254(pio_addr=x86IOAddress(0x40))
     _speaker = PcSpeaker(pio_addr=x86IOAddress(0x61))
+    _io_apic = I82094AA(pio_addr=0xFEC00000)
 
     pic1 = Param.I8259(_pic1, "Master PIC")
     pic2 = Param.I8259(_pic2, "Slave PIC")
     cmos = Param.Cmos(_cmos, "CMOS memory and real time clock device")
     pit = Param.I8254(_pit, "Programmable interval timer")
     speaker = Param.PcSpeaker(_speaker, "PC speaker")
+    io_apic = Param.I82094AA(_io_apic, "I/O APIC")
 
     def attachIO(self, bus):
         # Make internal connections
+        self.pic1.output = self.io_apic.pin(0)
         self.pic2.output = self.pic1.pin(2)
         self.cmos.int_pin = self.pic2.pin(0)
         self.pit.int_pin = self.pic1.pin(0)
@@ -67,3 +71,4 @@ class SouthBridge(SimObject):
         self.pic2.pio = bus.port
         self.pit.pio = bus.port
         self.speaker.pio = bus.port
+        self.io_apic.pio = bus.port

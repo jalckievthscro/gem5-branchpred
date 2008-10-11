@@ -40,6 +40,7 @@ namespace X86ISA
     class I8259;
     class Cmos;
     class Speaker;
+    class I82094AA;
 }
 
 class SouthBridge : public SimObject
@@ -53,6 +54,7 @@ class SouthBridge : public SimObject
     X86ISA::I8259 * pic2;
     X86ISA::Cmos * cmos;
     X86ISA::Speaker * speaker;
+    X86ISA::I82094AA * ioApic;
 
   public:
     typedef SouthBridgeParams Params;
