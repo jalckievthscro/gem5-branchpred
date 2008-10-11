@@ -29,6 +29,7 @@
 from m5.params import *
 from m5.proxy import *
 
+from Cmos import Cmos
 from Device import IsaFake
 from Pci import PciConfigAll
 from Platform import Platform
@@ -47,6 +48,7 @@ class PC(Platform):
     pciconfig = PciConfigAll()
 
     south_bridge = SouthBridge()
+    cmos = Cmos(pio_addr=x86IOAddress(0x70))
 
     # "Non-existant" port used for timing purposes by the linux kernel
     i_dont_exist = IsaFake(pio_addr=x86IOAddress(0x80), pio_size=1)
@@ -63,6 +65,7 @@ class PC(Platform):
 
     def attachIO(self, bus):
         self.south_bridge.pio = bus.port
+	self.cmos.pio = bus.port
         self.i_dont_exist.pio = bus.port
         self.behind_pci.pio = bus.port
         self.com_1.pio = bus.port
