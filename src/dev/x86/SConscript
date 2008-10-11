@@ -37,3 +37,7 @@ if env['FULL_SYSTEM'] and env['TARGET_ISA'] == 'x86':
     SimObject('Cmos.py')
     Source('cmos.cc')
     TraceFlag('CMOS', 'Accesses to CMOS devices')
+
+    SimObject('I8259.py')
+    Source('i8259.cc')
+    TraceFlag('I8259', 'Accesses to the I8259 PIC devices')
