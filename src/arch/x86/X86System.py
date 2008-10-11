@@ -57,6 +57,7 @@ from m5.params import *
 from E820 import X86E820Table, X86E820Entry
 from SMBios import X86SMBiosSMBiosTable
 from IntelMP import X86IntelMPFloatingPointer, X86IntelMPConfigTable
+from ACPI import X86ACPIRSDP
 from System import System
 
 class X86System(System):
@@ -69,6 +70,8 @@ class X86System(System):
     intel_mp_table = Param.X86IntelMPConfigTable(
             X86IntelMPConfigTable(),
             'intel mp spec configuration table')
+    acpi_description_table_pointer = Param.X86ACPIRSDP(
+            X86ACPIRSDP(), 'ACPI root description pointer structure')
 
 class LinuxX86System(X86System):
     type = 'LinuxX86System'
