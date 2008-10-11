@@ -28,7 +28,10 @@
 
 from m5.SimObject import SimObject
 from m5.params import *
-class AlphaTLB(SimObject):
+
+from BaseTLB import BaseTLB
+
+class AlphaTLB(BaseTLB):
     type = 'AlphaTLB'
     abstract = True
     size = Param.Int("TLB size")
