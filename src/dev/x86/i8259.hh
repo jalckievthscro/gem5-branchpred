@@ -74,9 +74,9 @@ class I8259 : public BasicPioDevice, public IntDev
         return dynamic_cast<const Params *>(_params);
     }
 
-    I8259(Params * p) : BasicPioDevice(p), latency(p->pio_latency),
-                        output(p->output), mode(p->mode), readIRR(true),
-                        initControlWord(0)
+    I8259(Params * p) : BasicPioDevice(p), IntDev(this),
+                        latency(p->pio_latency), output(p->output),
+                        mode(p->mode), readIRR(true), initControlWord(0)
     {
         pioSize = 2;
     }
