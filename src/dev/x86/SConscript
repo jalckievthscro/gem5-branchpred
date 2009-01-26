@@ -49,6 +49,10 @@ if env['FULL_SYSTEM'] and env['TARGET_ISA'] == 'x86':
     Source('i8254.cc')
     TraceFlag('I8254', 'Interrupts from the I8254 timer');
 
+    SimObject('I8237.py')
+    Source('i8237.cc')
+    TraceFlag('I8237', 'The I8237 dma controller');
+
     SimObject('PcSpeaker.py')
     Source('speaker.cc')
     TraceFlag('PcSpeaker')
