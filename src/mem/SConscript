@@ -32,8 +32,9 @@ Import('*')
 
 SimObject('Bridge.py')
 SimObject('Bus.py')
-SimObject('PhysicalMemory.py')
 SimObject('MemObject.py')
+SimObject('PhysicalMemory.py')
+SimObject('RubyMemory.py')
 
 Source('bridge.cc')
 Source('bus.cc')
@@ -44,6 +45,7 @@ Source('physical.cc')
 Source('port.cc')
 Source('tport.cc')
 Source('mport.cc')
+Source('rubymem.cc')
 
 if env['FULL_SYSTEM']:
     Source('vport.cc')
