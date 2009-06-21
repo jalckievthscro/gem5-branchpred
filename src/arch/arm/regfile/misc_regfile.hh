@@ -43,22 +43,6 @@ namespace ArmISA
         return "";
     }
 
-    //Coprocessor 0 Register Names
-    enum MiscRegTags {
-        // Status Registers for the ARM
-        //
-        // CPSR Layout
-        // 31302928  ...  7 6 5 4 3 2 1 0
-        // N Z C V   ...  I F T {  MODE }
-        CPSR = 0,
-        SPSR_FIQ,
-        SPSR_IRQ,
-        SPSR_SVC,
-        SPSR_UND,
-        SPSR_ABT,
-        FPSR
-    };
-
     class MiscRegFile {
 
       protected:
