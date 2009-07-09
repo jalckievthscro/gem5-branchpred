@@ -65,30 +65,10 @@ namespace SparcISA
       protected:
         IntRegFile intRegFile;          // integer register file
         FloatRegFile floatRegFile;      // floating point register file
-        MiscRegFile miscRegFile;        // control register file
 
       public:
 
         void clear();
-
-        MiscReg readMiscRegNoEffect(int miscReg);
-
-        MiscReg readMiscReg(int miscReg, ThreadContext *tc);
-
-        void setMiscRegNoEffect(int miscReg, const MiscReg &val);
-
-        void setMiscReg(int miscReg, const MiscReg &val,
-                ThreadContext * tc);
-
-        int instAsid()
-        {
-            return miscRegFile.getInstAsid();
-        }
-
-        int dataAsid()
-        {
-            return miscRegFile.getDataAsid();
-        }
 
         FloatReg readFloatReg(int floatReg, int width);
 
@@ -116,14 +96,6 @@ namespace SparcISA
 
       public:
     };
-
-    int flattenIntIndex(ThreadContext * tc, int reg);
-
-    static inline int
-    flattenFloatIndex(ThreadContext * tc, int reg)
-    {
-        return reg;
-    }
 
     void copyRegs(ThreadContext *src, ThreadContext *dest);
 

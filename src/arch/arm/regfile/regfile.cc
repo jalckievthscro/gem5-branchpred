@@ -59,11 +59,6 @@ RegFile::serialize(EventManager *em, ostream &os)
 {
     intRegFile.serialize(os);
     //SERIALIZE_ARRAY(floatRegFile, NumFloatRegs);
-    //SERIALZE_ARRAY(miscRegFile);
-    //SERIALIZE_SCALAR(miscRegs.fpcr);
-    //SERIALIZE_SCALAR(miscRegs.lock_flag);
-    //SERIALIZE_SCALAR(miscRegs.lock_addr);
-    //SERIALIZE_SCALAR(pc);
     SERIALIZE_SCALAR(npc);
     SERIALIZE_SCALAR(nnpc);
 }
@@ -73,14 +68,8 @@ RegFile::unserialize(EventManager *em, Checkpoint *cp, const string &section)
 {
     intRegFile.unserialize(cp, section);
     //UNSERIALIZE_ARRAY(floatRegFile);
-    //UNSERIALZE_ARRAY(miscRegFile);
-    //UNSERIALIZE_SCALAR(miscRegs.fpcr);
-    //UNSERIALIZE_SCALAR(miscRegs.lock_flag);
-    //UNSERIALIZE_SCALAR(miscRegs.lock_addr);
-    //UNSERIALIZE_SCALAR(pc);
     UNSERIALIZE_SCALAR(npc);
     UNSERIALIZE_SCALAR(nnpc);
-
 }
 
 } // namespace ArmISA

@@ -31,6 +31,7 @@
 #ifndef __ARCH_ARM_REGFILE_MISC_REGFILE_HH__
 #define __ARCH_ARM_REGFILE_MISC_REGFILE_HH__
 
+#include "arch/arm/isa_traits.hh"
 #include "arch/arm/types.hh"
 #include "sim/faults.hh"
 
