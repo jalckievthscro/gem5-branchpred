@@ -31,5 +31,6 @@ from m5.params import *
 from InstTracer import InstTracer
 
 class NativeTrace(InstTracer):
+    abstract = True
     type = 'NativeTrace'
     cxx_class = 'Trace::NativeTrace'

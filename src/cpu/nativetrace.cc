@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2001-2005 The Regents of The University of Michigan
+ * Copyright (c) 2006-2009 The Regents of The University of Michigan
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,28 +25,15 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * Authors: Steve Reinhardt
- *          Lisa Hsu
- *          Nathan Binkert
- *          Steve Raasch
+ * Authors: Gabe Black
  */
 
-#include <errno.h>
-
-#include "arch/registers.hh"
-#include "arch/utility.hh"
-#include "base/loader/symtab.hh"
 #include "base/socket.hh"
 #include "cpu/nativetrace.hh"
 #include "cpu/static_inst.hh"
-#include "cpu/thread_context.hh"
 #include "params/NativeTrace.hh"
 
-//XXX This is temporary
-#include "arch/isa_specific.hh"
-
 using namespace std;
-using namespace TheISA;
 
 namespace Trace {
 
@@ -64,41 +51,6 @@ NativeTrace::NativeTrace(const Params *p)
     }
     ccprintf(cerr, "Listening for native process on port %d\n", port);
     fd = native_listener.accept();
-    checkRcx = true;
-    checkR11 = true;
-}
-
-bool
-NativeTrace::checkRcxReg(const char * name, uint64_t &mVal, uint64_t &nVal)
-{
-    if(!checkRcx)
-        checkRcx = (mVal != oldRcxVal || nVal != oldRealRcxVal);
-    if(checkRcx)
-        return checkReg(name, mVal, nVal);
-    return true;
-}
-
-bool
-NativeTrace::checkR11Reg(const char * name, uint64_t &mVal, uint64_t &nVal)
-{
-    if(!checkR11)
-        checkR11 = (mVal != oldR11Val || nVal != oldRealR11Val);
-    if(checkR11)
-        return checkReg(name, mVal, nVal);
-    return true;
-}
-
-bool
-NativeTrace::checkXMM(int num, uint64_t mXmmBuf[], uint64_t nXmmBuf[])
-{
-    if (mXmmBuf[num * 2]     != nXmmBuf[num * 2] ||
-        mXmmBuf[num * 2 + 1] != nXmmBuf[num * 2 + 1]) {
-        DPRINTFN("Register xmm%d should be 0x%016x%016x but is 0x%016x%016x.\n",
-                num, nXmmBuf[num * 2 + 1], nXmmBuf[num * 2],
-                     mXmmBuf[num * 2 + 1], mXmmBuf[num * 2]);
-        return false;
-    }
-    return true;
 }
 
 void
@@ -106,119 +58,8 @@ Trace::NativeTraceRecord::dump()
 {
     //Don't print what happens for each micro-op, just print out
     //once at the last op, and for regular instructions.
-    if(!staticInst->isMicroop() || staticInst->isLastMicroop())
-    parent->check(thread, staticInst->isSyscall());
+    if (!staticInst->isMicroop() || staticInst->isLastMicroop())
+        parent->check(this);
 }
 
-void
-Trace::NativeTrace::check(ThreadContext * tc, bool isSyscall)
-{
-//    ostream &outs = Trace::output();
-    nState.update(fd);
-    mState.update(tc);
-
-    if(isSyscall)
-    {
-        checkRcx = false;
-        checkR11 = false;
-        oldRcxVal = mState.rcx;
-        oldRealRcxVal = nState.rcx;
-        oldR11Val = mState.r11;
-        oldRealR11Val = nState.r11;
-    }
-
-    checkReg("rax", mState.rax, nState.rax);
-    checkRcxReg("rcx", mState.rcx, nState.rcx);
-    checkReg("rdx", mState.rdx, nState.rdx);
-    checkReg("rbx", mState.rbx, nState.rbx);
-    checkReg("rsp", mState.rsp, nState.rsp);
-    checkReg("rbp", mState.rbp, nState.rbp);
-    checkReg("rsi", mState.rsi, nState.rsi);
-    checkReg("rdi", mState.rdi, nState.rdi);
-    checkReg("r8",  mState.r8,  nState.r8);
-    checkReg("r9",  mState.r9,  nState.r9);
-    checkReg("r10", mState.r10, nState.r10);
-    checkR11Reg("r11", mState.r11, nState.r11);
-    checkReg("r12", mState.r12, nState.r12);
-    checkReg("r13", mState.r13, nState.r13);
-    checkReg("r14", mState.r14, nState.r14);
-    checkReg("r15", mState.r15, nState.r15);
-    checkReg("rip", mState.rip, nState.rip);
-    checkXMM(0, mState.xmm, nState.xmm);
-    checkXMM(1, mState.xmm, nState.xmm);
-    checkXMM(2, mState.xmm, nState.xmm);
-    checkXMM(3, mState.xmm, nState.xmm);
-    checkXMM(4, mState.xmm, nState.xmm);
-    checkXMM(5, mState.xmm, nState.xmm);
-    checkXMM(6, mState.xmm, nState.xmm);
-    checkXMM(7, mState.xmm, nState.xmm);
-    checkXMM(8, mState.xmm, nState.xmm);
-    checkXMM(9, mState.xmm, nState.xmm);
-    checkXMM(10, mState.xmm, nState.xmm);
-    checkXMM(11, mState.xmm, nState.xmm);
-    checkXMM(12, mState.xmm, nState.xmm);
-    checkXMM(13, mState.xmm, nState.xmm);
-    checkXMM(14, mState.xmm, nState.xmm);
-    checkXMM(15, mState.xmm, nState.xmm);
-#if THE_ISA == SPARC_ISA
-    /*for(int f = 0; f <= 62; f+=2)
-    {
-        uint64_t regVal;
-        int res = read(fd, &regVal, sizeof(regVal));
-        if(res < 0)
-            panic("First read call failed! %s\n", strerror(errno));
-        regVal = TheISA::gtoh(regVal);
-        uint64_t realRegVal = thread->readFloatRegBits(f, 64);
-        if(regVal != realRegVal)
-        {
-            DPRINTF(ExecRegDelta, "Register f%d should be %#x but is %#x.\n", f, regVal, realRegVal);
-        }
-    }*/
-    uint64_t regVal;
-    int res = read(fd, &regVal, sizeof(regVal));
-    if(res < 0)
-        panic("First read call failed! %s\n", strerror(errno));
-    regVal = TheISA::gtoh(regVal);
-    uint64_t realRegVal = thread->readNextPC();
-    if(regVal != realRegVal)
-    {
-        DPRINTF(ExecRegDelta,
-                "Register pc should be %#x but is %#x.\n",
-                regVal, realRegVal);
-    }
-    res = read(fd, &regVal, sizeof(regVal));
-    if(res < 0)
-        panic("First read call failed! %s\n", strerror(errno));
-    regVal = TheISA::gtoh(regVal);
-    realRegVal = thread->readNextNPC();
-    if(regVal != realRegVal)
-    {
-        DPRINTF(ExecRegDelta,
-                "Register npc should be %#x but is %#x.\n",
-                regVal, realRegVal);
-    }
-    res = read(fd, &regVal, sizeof(regVal));
-    if(res < 0)
-        panic("First read call failed! %s\n", strerror(errno));
-    regVal = TheISA::gtoh(regVal);
-    realRegVal = thread->readIntReg(SparcISA::NumIntArchRegs + 2);
-    if((regVal & 0xF) != (realRegVal & 0xF))
-    {
-        DPRINTF(ExecRegDelta,
-                "Register ccr should be %#x but is %#x.\n",
-                regVal, realRegVal);
-    }
-#endif
-}
-
-/* namespace Trace */ }
-
-////////////////////////////////////////////////////////////////////////
-//
-//  ExeTracer Simulation Object
-//
-Trace::NativeTrace *
-NativeTraceParams::create()
-{
-    return new Trace::NativeTrace(this);
-};
+} /* namespace Trace */
