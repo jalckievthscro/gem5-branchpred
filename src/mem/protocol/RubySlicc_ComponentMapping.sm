@@ -29,6 +29,8 @@
 
 // Mapping functions
 
+int getNumberOfLastLevelCaches();
+
 // NodeID map_address_to_node(Address addr);
 MachineID mapAddressToRange(Address addr, MachineType type, int low, int high);
 MachineID map_Address_to_DMA(Address addr);
