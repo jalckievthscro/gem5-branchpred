@@ -30,14 +30,13 @@
 
 Import('*')
 
-# temporarily disable
-Return()
-
 if not env['RUBY']:
     Return()
 
-Source('GarnetNetwork_d.cc')
-Source('InputUnit_d.cc')
+SimObject('GarnetNetwork_d.py')
+
+Source('GarnetNetwork_d.cc', Werror=False)
+Source('InputUnit_d.cc', Werror=False)
 Source('NetworkInterface_d.cc')
 Source('NetworkLink_d.cc')
 Source('OutVcState_d.cc')
