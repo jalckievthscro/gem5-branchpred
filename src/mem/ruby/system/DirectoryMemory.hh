@@ -46,8 +46,6 @@
 #include "sim/sim_object.hh"
 #include "params/RubyDirectoryMemory.hh"
 
-class AbstractController;
-
 class DirectoryMemory : public SimObject {
 public:
   // Constructors
@@ -83,7 +81,6 @@ private:
 
 private:
   const string m_name;
-  AbstractController* m_controller;
   // Data Members (m_ prefix)
   Directory_Entry **m_entries;
   //  int m_size;  // # of memory module blocks this directory is responsible for

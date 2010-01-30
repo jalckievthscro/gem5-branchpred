@@ -40,25 +40,17 @@
 #include "mem/ruby/common/Global.hh"
 #include "mem/ruby/common/Address.hh"
 #include "mem/protocol/AccessPermission.hh"
+#include "mem/ruby/slicc_interface/AbstractEntry.hh"
 
 class DataBlock;
 
-class AbstractCacheEntry {
+class AbstractCacheEntry : public AbstractEntry {
 public:
   // Constructors
   AbstractCacheEntry();
 
   // Destructor, prevent it from instantiation
   virtual ~AbstractCacheEntry() = 0;
-
-  // Public Methods
-
-  // The methods below are those called by ruby runtime, add when it is
-  // absolutely necessary and should all be virtual function.
-  virtual DataBlock& getDataBlk() = 0;
-
-
-  virtual void print(ostream& out) const = 0;
 
   // Data Members (m_ prefix)
   Address m_Address; // Address of this block, required by CacheMemory
