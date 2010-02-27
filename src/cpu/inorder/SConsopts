@@ -30,5 +30,7 @@
 
 Import('*')
 
-all_cpu_list.append('InOrderCPU')
-default_cpus.append('InOrderCPU')
+CpuModel('InOrderCPU', 'inorder_cpu_exec.cc',
+         '#include "cpu/inorder/inorder_dyn_inst.hh"',
+         { 'CPU_exec_context': 'InOrderDynInst' },
+         default=True)
