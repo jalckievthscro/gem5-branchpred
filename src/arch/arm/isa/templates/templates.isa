@@ -37,5 +37,8 @@
 //
 // Authors: Gabe Black
 
+//Templates for predicated instructions
+##include "pred.isa"
+
 //Templates for memory instructions
 ##include "mem.isa"
