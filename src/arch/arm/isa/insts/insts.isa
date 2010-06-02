@@ -46,6 +46,9 @@
 //Loads of a single item
 ##include "ldr.isa"
 
+//Miscellaneous instructions that don't fit elsewhere
+##include "misc.isa"
+
 //Stores of a single item
 ##include "str.isa"
 
