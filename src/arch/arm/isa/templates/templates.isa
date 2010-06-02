@@ -48,3 +48,6 @@
 
 //Templates for branches
 ##include "branch.isa"
+
+//Templates for multiplies
+##include "mult.isa"
