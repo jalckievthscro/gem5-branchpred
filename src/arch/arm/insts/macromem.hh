@@ -93,6 +93,14 @@ class MicroMemOp : public MicroIntOp
     }
 };
 
+class MacroMemOp : public PredMacroOp
+{
+  protected:
+    MacroMemOp(const char *mnem, ExtMachInst machInst, OpClass __opClass,
+               IntRegIndex rn, bool index, bool up, bool user,
+               bool writeback, bool load, uint32_t reglist);
+};
+
 }
 
 #endif //__ARCH_ARM_INSTS_MACROMEM_HH__
