@@ -66,3 +66,6 @@
 
 //Multiply
 ##include "mult.isa"
+
+//Divide
+##include "div.isa"
