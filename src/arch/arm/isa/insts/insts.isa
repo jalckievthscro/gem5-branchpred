@@ -69,3 +69,6 @@
 
 //Divide
 ##include "div.isa"
+
+//FP (VFP and Neon)
+##include "fp.isa"
