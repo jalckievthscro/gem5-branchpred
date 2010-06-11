@@ -31,8 +31,8 @@
 #define __CPU_RUBYTEST_CHECKTABLE_HH__
 
 #include <iostream>
+#include <vector>
 
-#include "mem/gems_common/Vector.hh"
 #include "mem/ruby/common/Global.hh"
 
 class Address;
@@ -63,7 +63,7 @@ class CheckTable
     CheckTable(const CheckTable& obj);
     CheckTable& operator=(const CheckTable& obj);
 
-    Vector<Check*> m_check_vector;
+    std::vector<Check*> m_check_vector;
     Map<Address, Check*>* m_lookup_map_ptr;
 
     int m_num_cpu_sequencers;
