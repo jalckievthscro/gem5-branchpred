@@ -33,10 +33,6 @@ Import('*')
 if not env['RUBY']:
     Return()
 
-#Source('DetermGETXGenerator.cc')
-#Source('DetermInvGenerator.cc')
-#Source('DetermSeriesGETSGenerator.cc')
-#Source('DeterministicDriver.cc')
 #Source('SpecifiedGenerator.cc')
 #Source('getopt.cc')
 #Source('main.cc')
