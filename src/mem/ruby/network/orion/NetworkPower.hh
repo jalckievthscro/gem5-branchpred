@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1999-2008 Mark D. Hill and David A. Wood
+ * Copyright (c) 2010 Massachusetts Institute of Technology
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -24,9 +24,24 @@
  * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * Authors: Chia-Hsin Owen Chen
+ *          Tushar Krishna
  */
 
-#ifndef _NETWORK_POWER_H
-#define _NETWORK_POWER_H
+#ifndef POWER_TRACE_H
+#define POWER_TRACE_H
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <assert.h>
+
+#include "mem/ruby/network/garnet/fixed-pipeline/NetworkLink_d.hh"
+#include "mem/ruby/network/garnet/fixed-pipeline/GarnetNetwork_d.hh"
+#include "mem/ruby/network/garnet/fixed-pipeline/Router_d.hh"
+
+//int RW :
+#define READ_MODE 0
+#define WRITE_MODE 1
 
 #endif
