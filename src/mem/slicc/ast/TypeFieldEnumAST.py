@@ -39,18 +39,15 @@ class TypeFieldEnumAST(TypeFieldAST):
         return "[TypeFieldEnum: %r]" % self.field_id
 
     def generate(self, type):
+        if str(type) == "State":
+            self.error("States must in a State Declaration, not a normal enum.")
+        
         # Add enumeration
         if not type.enumAdd(self.field_id, self.pairs_ast.pairs):
             self.error("Duplicate enumeration: %s:%s" % (type, self.field_id))
 
         # Fill machine info
         machine = self.symtab.state_machine
-
-        if str(type) == "State":
-            if not machine:
-                self.error("State declaration not part of a machine.")
-            s = State(self.symtab, self.field_id, self.location, self.pairs)
-            machine.addState(s)
 
         if str(type) == "Event":
             if not machine:
