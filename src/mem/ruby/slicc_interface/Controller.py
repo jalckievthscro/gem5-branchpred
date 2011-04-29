@@ -35,6 +35,7 @@ class RubyController(SimObject):
     cxx_class = 'AbstractController'
     abstract = True
     version = Param.Int("")
+    cntrl_id = Param.Int("")
     transitions_per_cycle = \
         Param.Int(32, "no. of  SLICC state machine transitions per cycle")
     buffer_size = Param.Int(0, "max buffer size 0 means infinite")

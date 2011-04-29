@@ -38,16 +38,18 @@
 #include "mem/ruby/network/garnet/fixed-pipeline/flitBuffer_d.hh"
 #include "mem/ruby/network/garnet/NetworkHeader.hh"
 #include "mem/ruby/network/orion/NetworkPower.hh"
+#include "params/NetworkLink_d.hh"
+#include "sim/sim_object.hh"
 
 class GarnetNetwork_d;
 
-class NetworkLink_d : public Consumer
+class NetworkLink_d : public SimObject, public Consumer
 {
   public:
-    //NetworkLink_d(int id);
+    typedef NetworkLink_dParams Params;
+    NetworkLink_d(const Params *p);
     ~NetworkLink_d();
 
-    NetworkLink_d(int id, int link_latency, GarnetNetwork_d *net_ptr);
     void setLinkConsumer(Consumer *consumer);
     void setSourceQueue(flitBuffer_d *srcQueue);
     void print(std::ostream& out) const{}
@@ -67,8 +69,8 @@ class NetworkLink_d : public Consumer
   protected:
     int m_id;
     int m_latency;
-    GarnetNetwork_d *m_net_ptr;
 
+    int channel_width;
     flitBuffer_d *linkBuffer;
     Consumer *link_consumer;
     flitBuffer_d *link_srcQueue;

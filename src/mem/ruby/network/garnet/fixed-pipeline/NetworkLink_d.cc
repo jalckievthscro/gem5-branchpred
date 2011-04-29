@@ -28,22 +28,20 @@
  * Authors: Niket Agarwal
  */
 
-#include "mem/ruby/network/garnet/fixed-pipeline/GarnetNetwork_d.hh"
+#include "mem/ruby/network/garnet/fixed-pipeline/CreditLink_d.hh"
 #include "mem/ruby/network/garnet/fixed-pipeline/NetworkLink_d.hh"
 
-NetworkLink_d::NetworkLink_d(int id, int link_latency, GarnetNetwork_d *net_ptr)
+NetworkLink_d::NetworkLink_d(const Params *p)
+    : SimObject(p)
 {
-    m_net_ptr = net_ptr;
-    m_id = id;
-    m_latency = link_latency;
+    m_latency = p->link_latency;
+    channel_width = p->channel_width;
+    m_id = p->link_id;
     linkBuffer = new flitBuffer_d();
     m_link_utilized = 0;
-    m_vc_load.resize(m_net_ptr->getVCsPerClass() *
-                     net_ptr->getNumberOfVirtualNetworks());
+    m_vc_load.resize(p->vcs_per_class * p->virt_nets);
 
-    for (int i = 0;
-        i < m_net_ptr->getVCsPerClass()*net_ptr->getNumberOfVirtualNetworks();
-        i++) {
+    for (int i = 0; i < (p->vcs_per_class * p->virt_nets); i++) {
         m_vc_load[i] = 0;
     }
 }
@@ -88,4 +86,16 @@ int
 NetworkLink_d::getLinkUtilization()
 {
     return m_link_utilized;
+}
+
+NetworkLink_d *
+NetworkLink_dParams::create()
+{
+    return new NetworkLink_d(this);
+}
+
+CreditLink_d *
+CreditLink_dParams::create()
+{
+    return new CreditLink_d(this);
 }
