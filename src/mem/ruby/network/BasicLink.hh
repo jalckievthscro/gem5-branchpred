@@ -53,7 +53,7 @@ class BasicLink : public SimObject
     void print(std::ostream& out) const;
 
     int m_latency;
-    int m_bw_multiplier;
+    int m_bandwidth_factor;
     int m_weight;
 };
 
