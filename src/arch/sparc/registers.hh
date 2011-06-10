@@ -77,6 +77,8 @@ const int SyscallPseudoReturnReg = 9;
 const int NumIntArchRegs = 32;
 const int NumIntRegs = (MaxGL + 1) * 8 + NWindows * 16 + NumMicroIntRegs;
 
+const int TotalNumRegs = NumIntRegs + NumFloatRegs + NumMiscRegs;
+
 } // namespace SparcISA
 
 #endif
