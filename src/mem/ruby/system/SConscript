@@ -33,8 +33,9 @@ Import('*')
 if not env['RUBY']:
     Return()
 
-SimObject('AbstractMemory.py')
+SimObject('Cache.py')
 SimObject('Sequencer.py')
+SimObject('DirectoryMemory.py')
 SimObject('MemoryControl.py')
 SimObject('WireBuffer.py')
 SimObject('RubySystem.py')
