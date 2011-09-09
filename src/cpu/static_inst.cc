@@ -36,36 +36,12 @@
 
 StaticInstPtr StaticInst::nullStaticInstPtr;
 
-// Define the decode cache hash map.
-StaticInst::DecodeCache StaticInst::decodeCache;
-StaticInst::AddrDecodeCache StaticInst::addrDecodeCache;
-StaticInst::cacheElement StaticInst::recentDecodes[2];
-
 using namespace std;
 
 StaticInst::~StaticInst()
 {
     if (cachedDisassembly)
         delete cachedDisassembly;
-}
-
-void
-StaticInst::dumpDecodeCacheStats()
-{
-    cerr << "Decode hash table stats @ " << curTick() << ":" << endl;
-    cerr << "\tnum entries = " << decodeCache.size() << endl;
-    cerr << "\tnum buckets = " << decodeCache.bucket_count() << endl;
-    vector<int> hist(100, 0);
-    int max_hist = 0;
-    for (int i = 0; i < decodeCache.bucket_count(); ++i) {
-        int count = decodeCache.elems_in_bucket(i);
-        if (count > max_hist)
-            max_hist = count;
-        hist[count]++;
-    }
-    for (int i = 0; i <= max_hist; ++i) {
-        cerr << "\tbuckets of size " << i << " = " << hist[i] << endl;
-    }
 }
 
 bool
