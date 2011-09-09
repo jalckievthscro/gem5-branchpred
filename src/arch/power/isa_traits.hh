@@ -37,10 +37,9 @@
 
 #include "arch/power/types.hh"
 #include "base/types.hh"
+#include "cpu/static_inst_fwd.hh"
 
 namespace BigEndianGuest {}
-
-class StaticInstPtr;
 
 namespace PowerISA
 {
