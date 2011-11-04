@@ -36,3 +36,5 @@ class BaseGarnetNetwork(RubyNetwork):
     abstract = True
     ni_flit_size = Param.Int(16, "network interface flit size in bytes")
     vcs_per_vnet = Param.Int(4, "virtual channels per virtual network");
+    enable_fault_model = Param.Bool(False, "enable network fault model");
+    fault_model = Param.FaultModel(NULL, "network fault model");
