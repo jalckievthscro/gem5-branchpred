@@ -1,4 +1,16 @@
 /*
+ * Copyright (c) 2011 ARM Limited
+ * All rights reserved
+ *
+ * The license below extends only to copyright in the software and shall
+ * not be construed as granting a license to any other intellectual
+ * property including but not limited to intellectual property relating
+ * to a hardware implementation of the functionality of the software
+ * licensed hereunder.  You may use the software subject to the license
+ * terms below provided that you ensure that this notice is replicated
+ * unmodified and in its entirety in all distributions of the software,
+ * modified or unmodified, in source code or in binary form.
+ *
  * Copyright (c) 2006 The Regents of The University of Michigan
  * All rights reserved.
  *
@@ -31,8 +43,8 @@
 #include <string>
 
 #include "cpu/checker/cpu_impl.hh"
-#include "cpu/o3/alpha/dyn_inst.hh"
-#include "cpu/o3/alpha/impl.hh"
+#include "cpu/o3/dyn_inst.hh"
+#include "cpu/o3/impl.hh"
 #include "cpu/inst_seq.hh"
 #include "params/O3Checker.hh"
 #include "sim/process.hh"
@@ -41,16 +53,16 @@
 class MemObject;
 
 template
-class Checker<RefCountingPtr<AlphaDynInst<AlphaSimpleImpl> > >;
+class Checker<O3CPUImpl>;
 
 /**
  * Specific non-templated derived class used for SimObject configuration.
  */
-class O3Checker : public Checker<RefCountingPtr<AlphaDynInst<AlphaSimpleImpl> > >
+class O3Checker : public Checker<O3CPUImpl>
 {
   public:
     O3Checker(Params *p)
-        : Checker<RefCountingPtr<AlphaDynInst<AlphaSimpleImpl> > >(p)
+          : Checker<O3CPUImpl>(p)
     { }
 };
 
@@ -63,7 +75,7 @@ O3CheckerParams::create()
 {
     O3Checker::Params *params = new O3Checker::Params();
     params->name = name;
-    params->numberOfThreads = 1;
+    params->numThreads = numThreads;
     params->max_insts_any_thread = 0;
     params->max_insts_all_threads = 0;
     params->max_loads_any_thread = 0;
@@ -71,10 +83,8 @@ O3CheckerParams::create()
     params->exitOnError = exitOnError;
     params->updateOnError = updateOnError;
     params->warnOnlyOnLoadError = warnOnlyOnLoadError;
-    params->deferRegistration = defer_registration;
-    params->functionTrace = function_trace;
-    params->functionTraceStart = function_trace_start;
     params->clock = clock;
+    params->tracer = tracer;
     // Hack to touch all parameters.  Consider not deriving Checker
     // from BaseCPU..it's not really a CPU in the end.
     Counter temp;
@@ -92,8 +102,9 @@ O3CheckerParams::create()
     params->cpu_id = cpu_id;
 #if FULL_SYSTEM
     params->profile = profile;
+    params->interrupts = NULL;
 #else
-    params->process = workload;
+    params->workload = workload;
 #endif
 
     O3Checker *cpu = new O3Checker(params);
