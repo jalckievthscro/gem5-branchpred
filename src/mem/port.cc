@@ -32,9 +32,6 @@
  * @file
  * Port object definitions.
  */
-#include <cstring>
-
-#include "base/chunk_generator.hh"
 #include "base/trace.hh"
 #include "debug/Config.hh"
 #include "mem/mem_object.hh"
@@ -62,46 +59,6 @@ Port::setOwner(MemObject *_owner)
 {
     owner = _owner;
 }
-
-void
-Port::blobHelper(Addr addr, uint8_t *p, int size, MemCmd cmd)
-{
-    Request req;
-
-    for (ChunkGenerator gen(addr, size, peerBlockSize());
-         !gen.done(); gen.next()) {
-        req.setPhys(gen.addr(), gen.size(), 0, Request::funcMasterId);
-        Packet pkt(&req, cmd, Packet::Broadcast);
-        pkt.dataStatic(p);
-        sendFunctional(&pkt);
-        p += gen.size();
-    }
-}
-
-void
-Port::writeBlob(Addr addr, uint8_t *p, int size)
-{
-    blobHelper(addr, p, size, MemCmd::WriteReq);
-}
-
-void
-Port::readBlob(Addr addr, uint8_t *p, int size)
-{
-    blobHelper(addr, p, size, MemCmd::ReadReq);
-}
-
-void
-Port::memsetBlob(Addr addr, uint8_t val, int size)
-{
-    // quick and dirty...
-    uint8_t *buf = new uint8_t[size];
-
-    std::memset(buf, val, size);
-    blobHelper(addr, buf, size, MemCmd::WriteReq);
-
-    delete [] buf;
-}
-
 
 void
 Port::printAddr(Addr a)
