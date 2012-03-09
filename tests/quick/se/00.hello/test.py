@@ -28,3 +28,5 @@
 
 root.system.cpu.workload = LiveProcess(cmd = 'hello',
                                        executable = binpath('hello'))
+if root.system.cpu.checker != NULL:
+    root.system.cpu.checker.workload = root.system.cpu.workload
