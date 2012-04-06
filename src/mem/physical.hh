@@ -1,6 +1,15 @@
 /*
- * Copyright (c) 2001-2005 The Regents of The University of Michigan
- * All rights reserved.
+ * Copyright (c) 2012 ARM Limited
+ * All rights reserved
+ *
+ * The license below extends only to copyright in the software and shall
+ * not be construed as granting a license to any other intellectual
+ * property including but not limited to intellectual property relating
+ * to a hardware implementation of the functionality of the software
+ * licensed hereunder.  You may use the software subject to the license
+ * terms below provided that you ensure that this notice is replicated
+ * unmodified and in its entirety in all distributions of the software,
+ * modified or unmodified, in source code or in binary form.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -25,195 +34,88 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * Authors: Ron Dreslinski
- */
-
-/* @file
+ * Authors: Andreas Hansson
  */
 
 #ifndef __PHYSICAL_MEMORY_HH__
 #define __PHYSICAL_MEMORY_HH__
 
-#include <map>
-#include <string>
-
-#include "base/range.hh"
-#include "base/statistics.hh"
-#include "mem/mem_object.hh"
+#include "base/range_map.hh"
+#include "mem/abstract_mem.hh"
 #include "mem/packet.hh"
-#include "mem/tport.hh"
-#include "params/PhysicalMemory.hh"
-#include "sim/eventq.hh"
-#include "sim/stats.hh"
 
-//
-// Functional model for a contiguous block of physical memory. (i.e. RAM)
-//
-class PhysicalMemory : public MemObject
+/**
+ * The physical memory encapsulates all memories in the system and
+ * provides basic functionality for accessing those memories without
+ * going through the memory system and interconnect.
+ */
+class PhysicalMemory
 {
-  protected:
-
-    class MemoryPort : public SimpleTimingPort
-    {
-        PhysicalMemory *memory;
-
-      public:
-
-        MemoryPort(const std::string &_name, PhysicalMemory *_memory);
-
-      protected:
-
-        virtual Tick recvAtomic(PacketPtr pkt);
-
-        virtual void recvFunctional(PacketPtr pkt);
-
-        virtual AddrRangeList getAddrRanges();
-
-        virtual unsigned deviceBlockSize() const;
-    };
-
-    int numPorts;
-
 
   private:
-    // prevent copying of a MainMemory object
-    PhysicalMemory(const PhysicalMemory &specmem);
-    const PhysicalMemory &operator=(const PhysicalMemory &specmem);
 
-  protected:
+    // Global address map
+    range_map<Addr, AbstractMemory* > addrMap;
 
-    class LockedAddr {
-      public:
-        // on alpha, minimum LL/SC granularity is 16 bytes, so lower
-        // bits need to masked off.
-        static const Addr Addr_Mask = 0xf;
+    // a mutable cache for the last range that matched an address
+    mutable Range<Addr> rangeCache;
 
-        static Addr mask(Addr paddr) { return (paddr & ~Addr_Mask); }
+    // All address-mapped memories
+    std::vector<AbstractMemory*> memories;
 
-        Addr addr;      // locked address
-        int contextId;     // locking hw context
+    // The total memory size
+    uint64_t size;
 
-        // check for matching execution context
-        bool matchesContext(Request *req)
-        {
-            return (contextId == req->contextId());
-        }
+    // Prevent copying
+    PhysicalMemory(const PhysicalMemory&);
 
-        LockedAddr(Request *req)
-            : addr(mask(req->getPaddr())),
-              contextId(req->contextId())
-        {
-        }
-        // constructor for unserialization use
-        LockedAddr(Addr _addr, int _cid)
-            : addr(_addr), contextId(_cid)
-        {
-        }
-    };
-
-    std::list<LockedAddr> lockedAddrList;
-
-    // helper function for checkLockedAddrs(): we really want to
-    // inline a quick check for an empty locked addr list (hopefully
-    // the common case), and do the full list search (if necessary) in
-    // this out-of-line function
-    bool checkLockedAddrList(PacketPtr pkt);
-
-    // Record the address of a load-locked operation so that we can
-    // clear the execution context's lock flag if a matching store is
-    // performed
-    void trackLoadLocked(PacketPtr pkt);
-
-    // Compare a store address with any locked addresses so we can
-    // clear the lock flag appropriately.  Return value set to 'false'
-    // if store operation should be suppressed (because it was a
-    // conditional store and the address was no longer locked by the
-    // requesting execution context), 'true' otherwise.  Note that
-    // this method must be called on *all* stores since even
-    // non-conditional stores must clear any matching lock addresses.
-    bool writeOK(PacketPtr pkt) {
-        Request *req = pkt->req;
-        if (lockedAddrList.empty()) {
-            // no locked addrs: nothing to check, store_conditional fails
-            bool isLLSC = pkt->isLLSC();
-            if (isLLSC) {
-                req->setExtraData(0);
-            }
-            return !isLLSC; // only do write if not an sc
-        } else {
-            // iterate over list...
-            return checkLockedAddrList(pkt);
-        }
-    }
-
-    uint8_t *pmemAddr;
-    Tick lat;
-    Tick lat_var;
-    std::vector<MemoryPort*> ports;
-    typedef std::vector<MemoryPort*>::iterator PortIterator;
-
-    uint64_t _size;
-    uint64_t _start;
-
-    /** Number of total bytes read from this memory */
-    Stats::Scalar bytesRead;
-    /** Number of instruction bytes read from this memory */
-    Stats::Scalar bytesInstRead;
-    /** Number of bytes written to this memory */
-    Stats::Scalar bytesWritten;
-    /** Number of read requests */
-    Stats::Scalar numReads;
-    /** Number of write requests */
-    Stats::Scalar numWrites;
-    /** Number of other requests */
-    Stats::Scalar numOther;
-    /** Read bandwidth from this memory */
-    Stats::Formula bwRead;
-    /** Read bandwidth from this memory */
-    Stats::Formula bwInstRead;
-    /** Write bandwidth from this memory */
-    Stats::Formula bwWrite;
-    /** Total bandwidth from this memory */
-    Stats::Formula bwTotal;
+    // Prevent assignment
+    PhysicalMemory& operator=(const PhysicalMemory&);
 
   public:
-    uint64_t size() { return _size; }
-    uint64_t start() { return _start; }
 
-  public:
-    typedef PhysicalMemoryParams Params;
-    PhysicalMemory(const Params *p);
-    virtual ~PhysicalMemory();
-
-    const Params *
-    params() const
-    {
-        return dynamic_cast<const Params *>(_params);
-    }
-
-  public:
-    unsigned deviceBlockSize() const;
-    AddrRangeList getAddrRanges();
-    virtual SlavePort &getSlavePort(const std::string &if_name, int idx = -1);
-    void virtual init();
-    unsigned int drain(Event *de);
-
-    Tick doAtomicAccess(PacketPtr pkt);
-    void doFunctionalAccess(PacketPtr pkt);
-
-
-  protected:
-    virtual Tick calculateLatency(PacketPtr pkt);
-
-  public:
-     /**
-     * Register Statistics
+    /**
+     * Create a physical memory object, wrapping a number of memories.
      */
-    void regStats();
+    PhysicalMemory(const std::vector<AbstractMemory*>& _memories);
 
-    virtual void serialize(std::ostream &os);
-    virtual void unserialize(Checkpoint *cp, const std::string &section);
+    /**
+     * Nothing to destruct.
+     */
+    ~PhysicalMemory() { }
 
+    /**
+     * Check if a physical address is within a range of a memory that
+     * is part of the global address map.
+     *
+     * @param addr A physical address
+     * @return Whether the address corresponds to a memory
+     */
+    bool isMemAddr(Addr addr) const;
+
+    /**
+     * Get the memory ranges for all memories that are to be reported
+     * to the configuration table.
+     *
+     * @return All configuration table memory ranges
+     */
+    AddrRangeList getConfAddrRanges() const;
+
+    /**
+     * Get the total physical memory size.
+     *
+     * @return The sum of all memory sizes
+     */
+    uint64_t totalSize() const { return size; }
+
+    /**
+     *
+     */
+    void access(PacketPtr pkt);
+    void functionalAccess(PacketPtr pkt);
 };
+
+
+
 
 #endif //__PHYSICAL_MEMORY_HH__
