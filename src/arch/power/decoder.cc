@@ -33,6 +33,6 @@
 namespace PowerISA
 {
 
-DecodeCache Decoder::defaultCache;
+GenericISA::BasicDecodeCache Decoder::defaultCache;
 
 }
