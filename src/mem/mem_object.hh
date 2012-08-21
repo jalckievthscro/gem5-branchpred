@@ -51,13 +51,13 @@
 
 #include "mem/port.hh"
 #include "params/MemObject.hh"
-#include "sim/sim_object.hh"
+#include "sim/clocked_object.hh"
 
 /**
- * The MemObject class extends the SimObject with accessor functions
+ * The MemObject class extends the ClockedObject with accessor functions
  * to get its master and slave ports.
  */
-class MemObject : public SimObject
+class MemObject : public ClockedObject
 {
   public:
     typedef MemObjectParams Params;

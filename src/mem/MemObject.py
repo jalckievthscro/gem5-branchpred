@@ -26,8 +26,8 @@
 #
 # Authors: Ron Dreslinski
 
-from m5.SimObject import SimObject
+from ClockedObject import ClockedObject
 
-class MemObject(SimObject):
+class MemObject(ClockedObject):
     type = 'MemObject'
     abstract = True
