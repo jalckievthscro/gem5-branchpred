@@ -40,7 +40,6 @@
 #ifndef __DEV_ARM_A9SCU_HH__
 #define __DEV_ARM_A9SCU_HH__
 
-#include "base/range.hh"
 #include "dev/io_device.hh"
 #include "params/A9SCU.hh"
 
