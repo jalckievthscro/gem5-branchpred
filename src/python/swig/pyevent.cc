@@ -65,22 +65,3 @@ PythonEvent::process()
     // reference count must be decremented.
     Py_DECREF(object);
 }
-
-CountedDrainEvent *
-createCountedDrain()
-{
-    return new CountedDrainEvent();
-}
-
-void
-cleanupCountedDrain(Event *counted_drain)
-{
-    CountedDrainEvent *event =
-        dynamic_cast<CountedDrainEvent *>(counted_drain);
-    if (event == NULL) {
-        fatal("Called cleanupCountedDrain() on an event that was not "
-              "a CountedDrainEvent.");
-    }
-    assert(event->getCount() == 0);
-    delete event;
-}
