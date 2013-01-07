@@ -53,6 +53,7 @@ if env['TARGET_ISA'] == 'sparc':
     Source('vtophys.cc')
 
     SimObject('SparcInterrupts.py')
+    SimObject('SparcISA.py')
     SimObject('SparcNativeTrace.py')
     SimObject('SparcSystem.py')
     SimObject('SparcTLB.py')
