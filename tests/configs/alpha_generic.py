@@ -91,3 +91,10 @@ class LinuxAlphaFSSystemUniprocessor(LinuxAlphaSystemBuilder,
     def __init__(self, **kwargs):
         BaseFSSystemUniprocessor.__init__(self, **kwargs)
         LinuxAlphaSystemBuilder.__init__(self)
+
+class LinuxAlphaFSSwitcheroo(LinuxAlphaSystemBuilder, BaseFSSwitcheroo):
+    """Uniprocessor Alpha system prepared for CPU switching"""
+
+    def __init__(self, **kwargs):
+        BaseFSSwitcheroo.__init__(self, **kwargs)
+        LinuxAlphaSystemBuilder.__init__(self)
