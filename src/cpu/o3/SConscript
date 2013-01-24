@@ -43,7 +43,6 @@ if 'O3CPU' in env['CPU_MODELS']:
     SimObject('O3CPU.py')
 
     Source('base_dyn_inst.cc')
-    Source('bpred_unit.cc')
     Source('commit.cc')
     Source('cpu.cc')
     Source('deriv.cc')
