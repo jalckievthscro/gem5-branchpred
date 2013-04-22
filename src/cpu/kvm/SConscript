@@ -48,6 +48,10 @@ if env['USE_KVM']:
     Source('perfevent.cc')
     Source('timer.cc')
 
+    if env['TARGET_ISA'] == 'arm':
+        SimObject('ArmKvmCPU.py')
+        Source('arm_cpu.cc')
+
     DebugFlag('Kvm', 'Basic KVM Functionality')
     DebugFlag('KvmContext', 'KVM/gem5 context synchronization')
     DebugFlag('KvmIO', 'KVM MMIO diagnostics')
