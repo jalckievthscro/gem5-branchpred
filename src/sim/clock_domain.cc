@@ -44,8 +44,16 @@
 #include "params/DerivedClockDomain.hh"
 #include "params/SrcClockDomain.hh"
 #include "sim/clock_domain.hh"
+#include "sim/voltage_domain.hh"
 
-SrcClockDomain::SrcClockDomain(const Params *p) : ClockDomain(p)
+double
+ClockDomain::voltage() const
+{
+    return _voltageDomain->voltage();
+}
+
+SrcClockDomain::SrcClockDomain(const Params *p) :
+    ClockDomain(p, p->voltage_domain)
 {
     clockPeriod(p->clock);
 }
@@ -76,7 +84,7 @@ SrcClockDomainParams::create()
 }
 
 DerivedClockDomain::DerivedClockDomain(const Params *p) :
-    ClockDomain(p),
+    ClockDomain(p, p->clk_domain->voltageDomain()),
     parent(*p->clk_domain),
     clockDivider(p->clk_divider)
 {
