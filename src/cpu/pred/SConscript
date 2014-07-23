@@ -30,7 +30,8 @@
 
 Import('*')
 
-if 'InOrderCPU' in env['CPU_MODELS'] or 'O3CPU' in env['CPU_MODELS']:
+if 'InOrderCPU' in env['CPU_MODELS'] or 'O3CPU' in env['CPU_MODELS'] \
+    or 'Minor' in env['CPU_MODELS']:
     SimObject('BranchPredictor.py')
 
     Source('bpred_unit.cc')
