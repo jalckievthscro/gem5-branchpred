@@ -42,6 +42,7 @@ Import('*')
 if env['TARGET_ISA'] == 'arm':
     SimObject('Gic.py')
     SimObject('RealView.py')
+    SimObject('EnergyCtrl.py')
 
     Source('a9scu.cc')
     Source('amba_device.cc')
@@ -59,6 +60,7 @@ if env['TARGET_ISA'] == 'arm':
     Source('rtc_pl031.cc')
     Source('timer_cpulocal.cc')
     Source('vgic.cc')
+    Source('energy_ctrl.cc')
 
     DebugFlag('AMBA')
     DebugFlag('HDLcd')
@@ -66,4 +68,5 @@ if env['TARGET_ISA'] == 'arm':
     DebugFlag('Pl050')
     DebugFlag('GIC')
     DebugFlag('RVCTRL')
+    DebugFlag('EnergyCtrl')
     DebugFlag('VGIC')
