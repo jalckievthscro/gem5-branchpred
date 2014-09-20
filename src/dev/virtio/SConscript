@@ -44,11 +44,14 @@ if env['TARGET_ISA'] == 'null':
 
 SimObject('VirtIO.py')
 SimObject('VirtIOConsole.py')
+SimObject('VirtIOBlock.py')
 
 Source('base.cc')
 Source('pci.cc')
 Source('console.cc')
+Source('block.cc')
 
 DebugFlag('VIO', 'VirtIO base functionality')
 DebugFlag('VIOPci', 'VirtIO PCI transport')
 DebugFlag('VIOConsole', 'VirtIO console device')
+DebugFlag('VIOBlock', 'VirtIO block device')
