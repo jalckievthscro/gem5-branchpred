@@ -43,9 +43,12 @@ if env['TARGET_ISA'] == 'null':
     Return()
 
 SimObject('VirtIO.py')
+SimObject('VirtIOConsole.py')
 
 Source('base.cc')
 Source('pci.cc')
+Source('console.cc')
 
 DebugFlag('VIO', 'VirtIO base functionality')
 DebugFlag('VIOPci', 'VirtIO PCI transport')
+DebugFlag('VIOConsole', 'VirtIO console device')
