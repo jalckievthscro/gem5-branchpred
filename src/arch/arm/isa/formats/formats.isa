@@ -88,3 +88,6 @@
 
 //M5 Psuedo-ops
 ##include "m5ops.isa"
+
+//gem5-internal pseudo instructions
+##include "pseudo.isa"
