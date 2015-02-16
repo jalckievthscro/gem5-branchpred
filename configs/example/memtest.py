@@ -110,7 +110,7 @@ if args:
 
 block_size = 64
 
-# Start by partins the command line options and do some basic sanity
+# Start by parsing the command line options and do some basic sanity
 # checking
 try:
      cachespec = [int(x) for x in options.caches.split(':')]
