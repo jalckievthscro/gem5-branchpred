@@ -44,6 +44,7 @@ if env['TARGET_ISA'] == 'arm':
     SimObject('FlashDevice.py')
     SimObject('Gic.py')
     SimObject('RealView.py')
+    SimObject('UFSHostDevice.py')
     SimObject('EnergyCtrl.py')
 
     Source('a9scu.cc')
@@ -64,6 +65,7 @@ if env['TARGET_ISA'] == 'arm':
     Source('rtc_pl031.cc')
     Source('timer_cpulocal.cc')
     Source('vgic.cc')
+    Source('ufs_device.cc')
     Source('energy_ctrl.cc')
 
     DebugFlag('AMBA')
@@ -75,4 +77,5 @@ if env['TARGET_ISA'] == 'arm':
     DebugFlag('GIC')
     DebugFlag('RVCTRL')
     DebugFlag('EnergyCtrl')
+    DebugFlag('UFSHostDevice')
     DebugFlag('VGIC')
