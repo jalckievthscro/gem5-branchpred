@@ -56,7 +56,7 @@
 
 class DumpStatsPCEvent;
 
-class LinuxArmSystem : public ArmSystem
+class LinuxArmSystem : public GenericArmSystem
 {
   protected:
     DumpStatsPCEvent *dumpStatsPCEvent;
