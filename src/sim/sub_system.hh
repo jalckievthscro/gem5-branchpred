@@ -45,6 +45,8 @@
 #ifndef __SIM_SUB_SYSTEM_HH__
 #define __SIM_SUB_SYSTEM_HH__
 
+#include "params/SubSystem.hh"
+#include "sim/power/thermal_domain.hh"
 #include "sim/sim_object.hh"
 
 /**
@@ -54,9 +56,8 @@
 class SubSystem : public SimObject
 {
   public:
-    SubSystem(const Params *p) :
-        SimObject(p)
-    {}
+    typedef SubSystemParams Params;
+    SubSystem(const Params *p);
 };
 
 #endif
