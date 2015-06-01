@@ -48,6 +48,12 @@ host_isa = platform.machine()
 SimObject('KvmGic.py')
 Source('gic.cc')
 
+SimObject('BaseArmKvmCPU.py')
+Source('base_cpu.cc')
+
 if host_isa == "armv7l":
     SimObject('ArmKvmCPU.py')
     Source('arm_cpu.cc')
+elif host_isa == "aarch64":
+    SimObject('ArmV8KvmCPU.py')
+    Source('armv8_cpu.cc')
