@@ -45,6 +45,9 @@ if not (env['USE_KVM'] and env['TARGET_ISA'] == 'arm'):
 import platform
 host_isa = platform.machine()
 
+SimObject('KvmGic.py')
+Source('gic.cc')
+
 if host_isa == "armv7l":
     SimObject('ArmKvmCPU.py')
     Source('arm_cpu.cc')
