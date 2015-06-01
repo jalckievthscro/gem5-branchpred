@@ -48,10 +48,7 @@ if env['USE_KVM']:
     Source('perfevent.cc')
     Source('timer.cc')
 
-    if env['TARGET_ISA'] == 'arm':
-        SimObject('ArmKvmCPU.py')
-        Source('arm_cpu.cc')
-    elif env['TARGET_ISA'] == 'x86':
+    if env['TARGET_ISA'] == 'x86':
         SimObject('X86KvmCPU.py')
         Source('x86_cpu.cc')
 
