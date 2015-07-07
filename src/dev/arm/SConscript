@@ -46,6 +46,7 @@ if env['TARGET_ISA'] == 'arm':
     SimObject('RealView.py')
     SimObject('UFSHostDevice.py')
     SimObject('EnergyCtrl.py')
+    SimObject('NoMali.py')
 
     Source('a9scu.cc')
     Source('amba_device.cc')
@@ -60,6 +61,7 @@ if env['TARGET_ISA'] == 'arm':
     Source('hdlcd.cc')
     Source('kmi.cc')
     Source('timer_sp804.cc')
+    Source('gpu_nomali.cc')
     Source('rv_ctrl.cc')
     Source('realview.cc')
     Source('rtc_pl031.cc')
@@ -79,3 +81,4 @@ if env['TARGET_ISA'] == 'arm':
     DebugFlag('EnergyCtrl')
     DebugFlag('UFSHostDevice')
     DebugFlag('VGIC')
+    DebugFlag('NoMali')
