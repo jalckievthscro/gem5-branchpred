@@ -30,66 +30,19 @@
 #define __MEM_RUBY_STRUCTURES_LRUPOLICY_HH__
 
 #include "mem/ruby/structures/AbstractReplacementPolicy.hh"
+#include "params/LRUReplacementPolicy.hh"
 
 /* Simple true LRU replacement policy */
 
 class LRUPolicy : public AbstractReplacementPolicy
 {
   public:
-    LRUPolicy(int64 num_sets, int64 assoc);
+    typedef LRUReplacementPolicyParams Params;
+    LRUPolicy(const Params * p);
     ~LRUPolicy();
 
     void touch(int64 set, int64 way, Tick time);
     int64 getVictim(int64 set) const;
 };
-
-inline
-LRUPolicy::LRUPolicy(int64 num_sets, int64 assoc)
-    : AbstractReplacementPolicy(num_sets, assoc)
-{
-}
-
-inline
-LRUPolicy::~LRUPolicy()
-{
-}
-
-inline void
-LRUPolicy::touch(int64 set, int64 index, Tick time)
-{
-    assert(index >= 0 && index < m_assoc);
-    assert(set >= 0 && set < m_num_sets);
-
-    m_last_ref_ptr[set][index] = time;
-}
-
-inline int64
-LRUPolicy::getVictim(int64 set) const
-{
-    //  assert(m_assoc != 0);
-    Tick time, smallest_time;
-    int64 smallest_index;
-
-    smallest_index = 0;
-    smallest_time = m_last_ref_ptr[set][0];
-
-    for (unsigned i = 0; i < m_assoc; i++) {
-        time = m_last_ref_ptr[set][i];
-        // assert(m_cache[cacheSet][i].m_Permission !=
-        //     AccessPermission_NotPresent);
-
-        if (time < smallest_time) {
-            smallest_index = i;
-            smallest_time = time;
-        }
-    }
-
-    //  DEBUG_EXPR(CACHE_COMP, MedPrio, cacheSet);
-    //  DEBUG_EXPR(CACHE_COMP, MedPrio, smallest_index);
-    //  DEBUG_EXPR(CACHE_COMP, MedPrio, m_cache[cacheSet][smallest_index]);
-    //  DEBUG_EXPR(CACHE_COMP, MedPrio, *this);
-
-    return smallest_index;
-}
 
 #endif // __MEM_RUBY_STRUCTURES_LRUPOLICY_HH__

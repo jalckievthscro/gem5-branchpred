@@ -35,12 +35,18 @@ if env['PROTOCOL'] == 'None':
 
 SimObject('Cache.py')
 SimObject('DirectoryMemory.py')
+SimObject('LRUReplacementPolicy.py')
+SimObject('PseudoLRUReplacementPolicy.py')
+SimObject('ReplacementPolicy.py')
 SimObject('RubyMemoryControl.py')
 SimObject('RubyPrefetcher.py')
 SimObject('WireBuffer.py')
 
+Source('AbstractReplacementPolicy.cc')
 Source('DirectoryMemory.cc')
 Source('CacheMemory.cc')
+Source('LRUPolicy.cc')
+Source('PseudoLRUPolicy.cc')
 Source('WireBuffer.cc')
 Source('RubyMemoryControl.cc')
 Source('MemoryNode.cc')
