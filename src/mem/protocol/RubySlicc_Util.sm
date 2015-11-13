@@ -43,3 +43,6 @@ Addr setOffset(Addr addr, int offset);
 Addr makeLineAddress(Addr addr);
 int getOffset(Addr addr);
 int mod(int val, int mod);
+structure(BoolVec, external="yes") {
+}
+int countBoolVec(BoolVec bVec);
