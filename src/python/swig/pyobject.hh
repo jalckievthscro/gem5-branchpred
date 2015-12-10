@@ -31,7 +31,7 @@
 #include <Python.h>
 
 #include "base/types.hh"
-#include "dev/etherint.hh"
+#include "dev/net/etherint.hh"
 #include "sim/serialize.hh"
 #include "sim/sim_object.hh"
 
