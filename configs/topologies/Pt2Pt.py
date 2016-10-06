@@ -57,7 +57,7 @@ class Pt2Pt(SimpleTopology):
                 if (i != j):
                     link_count += 1
                     int_links.append(IntLink(link_id=link_count,
-                                            node_a=routers[i],
-                                            node_b=routers[j]))
+                                             src_node=routers[i],
+                                             dst_node=routers[j]))
 
         network.int_links = int_links
