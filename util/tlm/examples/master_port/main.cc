@@ -35,44 +35,27 @@
 #include <systemc>
 #include <tlm>
 
+#include "cli_parser.hh"
+#include "report_handler.hh"
 #include "sc_master_port.hh"
 #include "sim_control.hh"
 #include "stats.hh"
 #include "traffic_generator.hh"
 
-// Defining global string variable decalred in stats.hh
-std::string filename;
-
-void
-reportHandler(const sc_core::sc_report& report,
-              const sc_core::sc_actions& actions)
-{
-    uint64_t systemc_time = report.get_time().value();
-    uint64_t gem5_time = curTick();
-
-    std::cerr << report.get_time();
-
-    if (gem5_time < systemc_time) {
-        std::cerr << " (<) ";
-    } else if (gem5_time > systemc_time) {
-        std::cerr << " (!) ";
-    } else {
-        std::cerr << " (=) ";
-    }
-
-    std::cerr << ": " << report.get_msg_type() << ' ' << report.get_msg()
-              << '\n';
-}
-
 int
 sc_main(int argc, char** argv)
 {
+    CliParser parser;
+    parser.parse(argc, argv);
+
     sc_core::sc_report_handler::set_handler(reportHandler);
 
-    SimControl simControl("gem5", argc, argv);
-    TrafficGenerator trafficGenerator("traffic_generator");
+    Gem5SystemC::Gem5SimControl simControl("gem5",
+                                           parser.getConfigFile(),
+                                           parser.getSimulationEnd(),
+                                           parser.getDebugFlags());
 
-    filename = "m5out/stats-systemc.txt";
+    TrafficGenerator trafficGenerator("traffic_generator");
 
     tlm::tlm_target_socket<>* mem_port =
       dynamic_cast<tlm::tlm_target_socket<>*>(
@@ -86,7 +69,7 @@ sc_main(int argc, char** argv)
         std::exit(EXIT_FAILURE);
     }
 
-    std::cout << "Starting sc_main" << std::endl;
+    SC_REPORT_INFO("sc_main", "Start of Simulation");
 
     sc_core::sc_start(); // Run to end of simulation
 
