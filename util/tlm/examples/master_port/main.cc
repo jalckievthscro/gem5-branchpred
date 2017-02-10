@@ -36,8 +36,8 @@
 #include <tlm>
 
 #include "cli_parser.hh"
+#include "master_transactor.hh"
 #include "report_handler.hh"
-#include "sc_master_port.hh"
 #include "sim_control.hh"
 #include "stats.hh"
 #include "traffic_generator.hh"
@@ -50,24 +50,16 @@ sc_main(int argc, char** argv)
 
     sc_core::sc_report_handler::set_handler(reportHandler);
 
-    Gem5SystemC::Gem5SimControl simControl("gem5",
-                                           parser.getConfigFile(),
-                                           parser.getSimulationEnd(),
-                                           parser.getDebugFlags());
+    Gem5SystemC::Gem5SimControl sim_control("gem5",
+                                            parser.getConfigFile(),
+                                            parser.getSimulationEnd(),
+                                            parser.getDebugFlags());
 
     TrafficGenerator trafficGenerator("traffic_generator");
+    Gem5SystemC::Gem5MasterTransactor transactor("transactor", "transactor");
 
-    tlm::tlm_target_socket<>* mem_port =
-      dynamic_cast<tlm::tlm_target_socket<>*>(
-        sc_core::sc_find_object("gem5.memory"));
-
-    if (mem_port) {
-        SC_REPORT_INFO("sc_main", "Port Found");
-        trafficGenerator.socket.bind(*mem_port);
-    } else {
-        SC_REPORT_FATAL("sc_main", "Port Not Found");
-        std::exit(EXIT_FAILURE);
-    }
+    trafficGenerator.socket.bind(transactor.socket);
+    transactor.sim_control.bind(sim_control);
 
     SC_REPORT_INFO("sc_main", "Start of Simulation");
 
