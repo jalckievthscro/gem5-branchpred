@@ -30,11 +30,10 @@
 
 #include "cpu/reg_class.hh"
 
-const char *RegClassStrings[] = {
+const char *RegId::regClassStrings[] = {
     "IntRegClass",
     "FloatRegClass",
     "CCRegClass",
     "MiscRegClass"
 };
 
-const RegId RegId::zeroReg = RegId(IntRegClass, TheISA::ZeroReg);
