@@ -61,6 +61,7 @@ enum {
     ReadId          = 0xf2,
     TpReadId        = 0xe1,
     Ack             = 0xfa,
+    Resend          = 0xfe,
     SetRate         = 0xf3,
     Enable          = 0xf4,
     Disable         = 0xf5,
