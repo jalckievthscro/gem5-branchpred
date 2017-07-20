@@ -29,8 +29,9 @@
 from m5.SimObject import SimObject
 from m5.params import *
 from m5.proxy import *
+from Serial import SerialDevice
 
-class Terminal(SimObject):
+class Terminal(SerialDevice):
     type = 'Terminal'
     cxx_header = "dev/terminal.hh"
     intr_control = Param.IntrControl(Parent.any, "interrupt controller")

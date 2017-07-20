@@ -35,8 +35,9 @@
 #ifndef __UART_HH__
 #define __UART_HH__
 
+#include "base/callback.hh"
 #include "dev/io_device.hh"
-#include "dev/terminal.hh"
+#include "dev/serial.hh"
 #include "params/Uart.hh"
 
 class Platform;
@@ -49,7 +50,7 @@ class Uart : public BasicPioDevice
   protected:
     int status;
     Platform *platform;
-    Terminal *term;
+    SerialDevice *device;
 
   public:
     typedef UartParams Params;
