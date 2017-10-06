@@ -31,9 +31,12 @@ Import('*')
 
 SimObject('SimpleObject.py')
 SimObject('HelloObject.py')
+SimObject('SimpleMemobj.py')
 
 Source('simple_object.cc')
 Source('hello_object.cc')
 Source('goodbye_object.cc')
+Source('simple_memobj.cc')
 
 DebugFlag('HelloExample', "For Learning gem5 Part 2. Simple example debug flag")
+DebugFlag('SimpleMemobj', "For Learning gem5 Part 2.")
