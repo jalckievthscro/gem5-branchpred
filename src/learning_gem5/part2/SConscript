@@ -30,5 +30,10 @@
 Import('*')
 
 SimObject('SimpleObject.py')
+SimObject('HelloObject.py')
 
 Source('simple_object.cc')
+Source('hello_object.cc')
+Source('goodbye_object.cc')
+
+DebugFlag('HelloExample', "For Learning gem5 Part 2. Simple example debug flag")
