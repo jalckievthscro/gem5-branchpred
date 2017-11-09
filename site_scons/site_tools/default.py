@@ -72,6 +72,8 @@ def common_config(env):
     env.srcdir = env.root.Dir('src')
 
 gem5_tool_list = [
+    'git',
+    'mercurial',
 ]
 
 def generate(env):
