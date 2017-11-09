@@ -38,6 +38,8 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+from gem5_python_paths import extra_python_paths
+
 # Check for recent-enough Python and SCons versions.
 try:
     # Really old versions of scons only take two options for the
@@ -66,3 +68,5 @@ For more details, see:
     http://gem5.org/wiki/index.php/Using_a_non-default_Python_installation
 """
     raise
+
+sys.path[1:1] = extra_python_paths
