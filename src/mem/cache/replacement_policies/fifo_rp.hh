@@ -43,6 +43,7 @@
 
 class FIFORP : public BaseReplacementPolicy
 {
+  protected:
     /** FIFO-specific implementation of replacement data. */
     struct FIFOReplData : ReplacementData
     {
